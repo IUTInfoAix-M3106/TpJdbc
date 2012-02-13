@@ -1,0 +1,7 @@
+Tp d'initiation à JDBC donné aux étudiants de deuxième année du DUT Informatique d'Aix-en-Provence.
+En plus d'apprendre à utiliser l'API JDBC, l'objectif final de ce TP est de sensibiliser les étudiants 
+à la difficulté de de construction et de maintenance manuelle d'une couche de persistance.
+
+Plusieurs liens dans le document pointent vers des ressources non accéssibles en dehors de l'IUT. 
+Les versions ultérieures corrigerons ce problème. Ce document est diffusé sous license Creative Common 
+CC-BY-NC-SA.
