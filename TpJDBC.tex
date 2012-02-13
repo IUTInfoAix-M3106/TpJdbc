@@ -1,0 +1,988 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[x11names,table]{xcolor}
+\usepackage[french]{babel}
+\usepackage{wasysym}
+\usepackage{natbib}
+% Si l'on veut produire une version PDF avec distiller ou pdflatex:
+\usepackage[pageanchor=false,colorlinks,plainpages=false]{hyperref}
+\usepackage{url}
+
+\ifx\pdftexversion\undefined
+\usepackage[dvips]{graphicx}
+\else
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+
+\graphicspath{{Images/}}
+
+\usepackage{time}
+%\usepackage[scaled]{helvet}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\usepackage{listings}
+\usepackage{todonotes}
+\usepackage{tikz-er2}
+\usepackage{pgf-umlcd}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shadows}
+\usetikzlibrary{backgrounds}
+\tikzstyle{every entity} = [top color=white, 
+                            bottom color=blue!30, 
+                            draw=blue!50!black!100, 
+                            drop shadow]
+\tikzstyle{every weak entity} = [drop shadow={shadow xshift=.7ex, shadow yshift=-.7ex}]
+\tikzstyle{every attribute} = [top color=white, 
+                               bottom color=yellow!20, 
+                               draw=yellow, 
+                               node distance=1cm, 
+                               drop shadow]
+\tikzstyle{every relationship} = [top color=white, 
+                                  bottom color=yellow!20,  
+                                  draw=yellow, 
+                                  drop shadow]
+\tikzstyle{every isa} = [draw=blue!50!black!100]
+
+\usepackage[]{subfig}
+%\renewcommand{\thesubfigure}{Figure~\thefigure.\arabic{subfigure}}
+%\captionsetup[subfigure]{labelformat=simple,labelsep=colon, listofformat=subsimple}
+%\captionsetup{lofdepth=2}
+%\makeatletter
+%\renewcommand{\p@subfigure}{}
+%\makeatother
+
+\usepackage{geometry}
+\geometry{%
+a4paper,
+body={160mm,250mm},
+left=25mm,top=20mm,
+headheight=7mm,headsep=4mm,
+marginparsep=3mm,
+marginparwidth=27mm}
+
+\usepackage{changepage}
+\usepackage{placeins}
+
+\usepackage{rotating}
+
+\newenvironment{agrandirmarges}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{0pt plus 1pt}%
+\checkoddpage%
+\ifoddpage
+\setlength{\leftmargin}{-#1}\setlength{\rightmargin}{-#2}
+\else
+\setlength{\leftmargin}{-#2}\setlength{\rightmargin}{-#1}
+\fi}\item }%
+{\end{list}}
+
+\newcounter{compteurQuestion}
+\setcounter{compteurQuestion}{0}
+\newcommand{\Question}{\paragraph*{Question~\thecompteurQuestion~:}\addtocounter{compteurQuestion}{1}}
+
+\date{}
+\begin{document}
+\lstset{
+         breaklines=true,                                     % line wrapping on
+         %frame=ltrb,
+         framesep=5pt,
+         %samepage=true,
+         tabsize=4,
+         basicstyle=\normalsize,
+         frameround=ftft,
+         keywordstyle=\ttfamily\color{SeaGreen4},
+         identifierstyle=\ttfamily\bfseries\color{RoyalBlue4},
+         commentstyle=\color{RoyalBlue3},
+         stringstyle=\ttfamily,
+         showstringspaces=false
+}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\newlength{\niveauZero}
+\newlength{\niveauUn}
+\newlength{\niveauDeux}
+\newlength{\niveauTrois}
+\newlength{\niveauQuatre}
+\newlength{\niveauCinq}
+
+\newlength{\colonneZero}
+\newlength{\colonneUn}
+\newlength{\colonneDeux}
+\newlength{\colonneTrois}
+\newlength{\colonneQuatre}
+\newlength{\colonneCinq}
+
+
+{\centering
+    \mbox{
+      \makebox[15cm][l]{
+      \begin{minipage}{15cm}
+        \begin{center}
+          {\Huge Construction d'une Couche de Persistance}\\[1cm]
+          {\Large Sébastien \textsc{Nedjar} et Fabien \textsc{Pesci}}
+        \end{center}
+      \end{minipage}
+      }
+    }
+}\\[0.4cm]
+\section{Introduction}
+
+Le principal défaut que l'on peut reprocher à JDBC est d'être une API de bas niveau qui conduit à une trop forte 
+imbrication entre le code métier et la base de données. Le code produit est donc trop peu modulaire et 
+trop dépendant du \textsc{Sgbd} choisit. Cela implique une moins grande maintenabilité et une plus grande 
+dépendance face à une technologie de manipulation des données. Pour contourner cette difficulté, nous allons construire 
+une couche dédiée à l'accès aux données  (souvent appelée couche DAO). La construction d'une telle couche a pour objectif de séparer totalement 
+les accès aux données du code de notre application. Les techniques présentées constituent une première introduction par 
+la pratique aux solutions de persistance Objets/Relationnelle comme Hibernate\footnote{\url{http://www.hibernate.org/}} 
+ou EclipseLink\footnote{\url{http://www.eclipse.org/eclipselink/}}.
+
+Pour illustrer ce propos, nous utiliserons la base de données «~Gestion Pédagogique\footnote{Script de régénération disponible 
+à l'adresse suivante : \url{http://allegro.iut.univ-aix.fr/~nedjar/gestion_peda_oracle.sql} ou 
+\url{http://allegro.iut.univ-aix.fr/~nedjar/gestion_peda_mysql.sql}}~» que vous avez utilisée lors de vos TP de \textsc{Pl/Sql} 
+en début d'année. Le modèle conceptuel des données est rappelé par la figure~\ref{mcd_gestion_peda}.
+
+\begin{figure}[bp]\centering
+\begin{tikzpicture}[node distance=1.96cm, every edge/.style={link}]
+
+  \node[entity] (mat) {
+    \textbf{Module}
+    \nodepart{second}
+    \key{Code}\\
+    Libellé\\
+    H\_Cours\_Prev\\
+    H\_Cours\_Rea\\
+    H\_TP\_Prev\\
+    H\_TP\_Rea\\
+    Discipline\\
+    Coef\_Test\\
+    Coef\_CC\\
+  };
+
+  \node[entity] (etud) [below right =of mat ] {
+    \textbf{Etudiant}
+    \nodepart{second}
+    \key{Num\_Et}\\
+	  Nom\_Et\\
+	  Prénom\_Et\\
+	  CP\_Et\\
+	  Ville\_Et\\
+	  Année\\
+	  Groupe\\
+  };
+
+  \node[entity] (ens) [above right=of etud ] {
+    \textbf{Prof}
+    \nodepart{second}
+    \key{Num\_Prof}\\
+	  Nom\_Prof\\
+	  Prénom\_Prof\\
+	  Adr\_Prof\\
+	  CP\_Prof\\
+	  Ville\_Prof\\
+  };
+
+  \node[relationship] (notation) [below =of mat] {Notation}
+     child {node[attributes] {Moy\_CC\\Moy\_Test}};
+  \draw[link] (mat) -- node [pos=0.15, auto] {(0,n)} (notation);
+  \draw[link] (etud.145) -- node [pos=0.35, auto, swap] {(0,n)} (notation);
+
+  \node[relationship] (enseigne) [above=of etud] {Enseignement};  
+  \draw[link] (mat.315) -- node [pos=0.40, auto] {(0,n)} (enseigne.west);
+  \draw[link] (ens.208) -- node [pos=0.40, auto, swap] {(0,n)} (enseigne.east);
+  \draw[link] (etud) -- node [pos=0.15, auto, swap] {(0,n)} (enseigne);
+
+  \node[relationship] (mat_spec) [above=1cm of enseigne] {Spécialiste};
+  \draw[link] (mat.12) -- node [pos=0.35, auto] {(0,n)} (mat_spec);
+  \draw[link] (ens.145) -- node [pos=0.35, auto, swap] {(1,1)} (mat_spec);
+  
+  \node[relationship] (resp) [above=1cm of mat_spec] {Responsable};
+  \draw[link] (mat.56) -- node [pos=0.3, auto] {(1,1)} (resp);
+  \draw[link] (ens.north) |- node [pos=0.15, auto, swap] {(0,n)} (resp.east);
+
+  \node[relationship] (mat_pere) [left=1cm of mat] {A pour père};
+  \draw[link] (mat.150) -| node [pos=0.1, auto, swap] {(1,1)} (mat_pere.north);
+  \draw[link] (mat.210) -| node [pos=0.1, auto] {(0,n)} (mat_pere.south);
+  
+\end{tikzpicture}
+\caption{Modèle conceptuel des données de la base «~Gestion Pédagogique~»\label{mcd_gestion_peda}}
+\end{figure}
+
+\section{Couche de persistance}
+L'API JDBC permet de facilement récupérer et manipuler un ensemble de tuples récupéré à partir d'une base de données. 
+Chaque tuple n'est pas simplement  une concaténation de valeurs sans rapport les unes avec les autres mais un ensemble 
+de valeurs structuré permettant de modéliser une «~entité~» de l'univers réel. Lorsqu'un tuple est récupéré à partir de 
+JDBC, il faut donc impérativement conserver ce  lien sémantique existant entre les attributs. C'est pour cela que chaque 
+tuple de la base  de données devra être associé (mappé) à un objet du langage de programmation.  Une fois le mapping 
+établi, l'objet commence son existence autonome comme n'importe quel  autre objet de l'application.  Son état (ensemble 
+des valeurs de ses propriétés) sera très probablement mis à jour.  Afin que ces changements soient visibles pour les 
+autres utilisateurs, il faudra  périodiquement synchroniser l'état de l'objet et de la base de données. Une fois les  
+modifications sauvegardées, l'objet pourra être détruit car l'utilisateur peut à tout moment reconstruire un objet 
+semblable à partir de la base de données. Le mapping objet/relationnel  permet ainsi de rendre les objets de 
+l'application persistants.
+
+Dans la suite de cette section nous allons montrer une méthode pour créer «~proprement~»  un tel mapping. La solution 
+présentée est principalement pédagogique : elle ne sera en conséquence pas satisfaisante pour une solution déployée 
+à grande échelle, mais sera amplement suffisante  pour le développement d'une application mono-utilisateur (comme celle 
+que vous devez réaliser en \emph{Cas 2}).
+
+\subsection{Connexion à la base de données}
+Recréer une connexion pour chaque requête est inutile et coûteux. Pour éviter cela, il faut  partager la connexion entre
+plusieurs traitements. La problématique est de savoir quelles sont les  requêtes à exécuter ensemble. La solution 
+classique est d'exécuter au sein d'une même connexion  tous les traitements concourant à la réalisation d'un même 
+objectif. Chacun de ces ensembles  de traitements constitue une session. Une même session peut contenir plusieurs 
+transactions  (unités de traitement indivisibles)\footnote{\url{http://fr.wikipedia.org/wiki/Transaction_informatique}}.
+Tout ceci permet de gérer efficacement et intelligemment  les problèmes de concurrence et de reprise après erreur. 
+Réaliser une gestion réaliste des  connexions, sessions et transactions demande un travail important que nous n'avons
+pas les  moyens fournir. Notre application étant simple et mono-utilisateur nous utiliserons la méthode  dite 
+\emph{«~session-per-application~»}, c'est à dire qu'il n'y aura qu'une seule connexion active  à la fois et tous les 
+objets devront se la partager. Le pattern  singleton\footnote{\url{http://fr.wikipedia.org/wiki/Singleton_\%28patron_de_conception\%29}} 
+est mis en œuvre pour  que tous les objets de notre application puissent récupérer l'unique instance de la classe 
+\texttt{Connection}.
+
+\begin{figure}\centering
+\begin{tikzpicture}
+\begin{singleton}[text width=6cm]{ConnexionUnique}{0,0}
+
+\attribute{-connection : Connection}
+\attribute{-\underline{instance} : ConnexionUnique }
+\attribute{-\underline{CONNECT\_URL} : String }
+\operation{-ConnexionUnique()}
+\operation{+getConnection() : Connection }
+\operation{+\underline{getInstance()} : ConnexionUnique }
+
+\end{singleton}
+\end{tikzpicture}
+\caption{Classe \texttt{ConnexionUnique}\label{connexion}}
+\end{figure}
+
+\Question
+Écrire la classe \texttt{ConnexionUnique} dont le diagramme UML vous est donné dans la figure~\ref{connexion}.
+Copier la classe \texttt{testJDBC} dans la nouvelle classe \texttt{testConnexion}.
+Modifier le code de cette nouvelle classe pour qu'elle utilise notre objet \texttt{ConnexionUnique}.
+
+\subsection{Création des classes d'objets métiers}
+La création d'un mapping entre le «~monde objet~» et le «~monde relationnel~» nécessite au préalable la création de 
+modèles de données semblables mais adaptés aux spécificités de chacun de ses mondes.  L'objectif est donc de transformer 
+le modèle relationnel de la base «~Gestion Pédagogique~» (schéma Entité/Association)  en un modèle objet satisfaisant 
+(diagramme de classes UML\footnote{\url{http://uml.free.fr/}}).
+
+La figure~\ref{uml_gestion_peda} est une traduction directe du schéma Entité/Association en un  diagramme de classe UML. 
+Chacun des concepts du schéma E/A a été transformé en son équivalent UML \footnote{Le losange est le symbole 
+matérialisant les associations n-aires ($n > 2$). \texttt{Notation} est une classe dite d'association. Elle permet de 
+modéliser les attributs portés par une association.}. À partir de cette traduction, nous allons montrer les 
+modifications à apporter à ce modèle pour le rendre implémentable.
+
+\begin{figure}\centering
+
+\begin{tikzpicture}[]
+
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Prof}{10,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Etudiant}{5,-4.5}
+\end{class}
+
+\begin{class}[text width=2cm]{Notation}{0,-6}
+\end{class}
+
+\draw[rounded corners=1em,color=\umldrawcolor,text=\umltextcolor,decoration={text along path, text={Est pere de}, text align=center}, decorate]
+(Module.west) -| +(-1.1,1.3) -| (Module.north);
+
+\draw [rounded corners=1em,color=\umldrawcolor,text=\umltextcolor] 
+(Module.west) -| +(-1,1.2) node[near start, above]{1} -| (Module.north) node[near end, right]{*};
+
+\draw [color=\umldrawcolor,text=\umltextcolor] (Prof.160) to 
+node[very near start, above]{1}
+node [above]{A pour responsable $\RHD$}
+node[very near end, above]{*}  
+(Module.20);
+
+\draw [color=\umldrawcolor,text=\umltextcolor] (Module.340) to
+node[very near start, above]{1}
+node [below]{$\LHD$ Est spécialiste}
+node[very near end, above]{*}
+(Prof.200);
+
+\draw [color=\umldrawcolor,text=\umltextcolor] (Module.south) |- node[](a){} (Etudiant.west)
+node[very near start, left]{*}
+node[very near end, above]{*};
+
+\draw [fill,color=\umldrawcolor,dashed] (a) circle (2pt)--(Notation);
+
+\ternaryassociation%
+{Module.south}%
+{Prof.south}%
+{Etudiant}%
+{Enseignement}
+\end{tikzpicture}
+\caption{Traduction UML du modèle conceptuel des données de la base «~Gestion Pédagogique~»\label{uml_gestion_peda}}
+\end{figure}
+
+\subsubsection{Modélisation des types d'entités}
+Pour établir une correspondance entre une entité de notre BD et un objet de notre application, il faut commencer par 
+écrire les classes associées à chacun des types d'entités. Pour des raisons qui apparaitront plus tard, chaque classe 
+métier devra suivre les conventions suivantes :
+\begin{itemize}
+	\item  La classe doit être «~sérialisable~»\footnote{\url{http://fr.wikipedia.org/wiki/S\%C3\%A9rialisation}} 
+	(\emph{i.e.} implémenter l'interface \texttt{Serializable}) pour pouvoir sauvegarder et restaurer l'état des instances 
+	de cette classe ;
+  \item  La classe doit posséder un constructeur sans argument (constructeur par défaut);
+  \item  Les propriétés privées de la classe (variables d'instances) doivent être accessibles publiquement via des 
+  méthodes accesseurs construites avec \texttt{get} ou \texttt{set} suivi du nom de la propriété avec la première lettre 
+  transformée en majuscule (voir le menu \texttt{Source $\rightarrow$ Generate Getters and Setters...} dans Eclipse).
+  \item  La classe doit surcharger la méthode \texttt{toString()} pour pouvoir afficher l'état des instances de cette 
+  classe (voir le menu \texttt{Source $\rightarrow$ Generate toString()} dans Eclipse).
+  \item  La classe doit aussi surcharger les méthodes \texttt{equals()} et \texttt{hashCode()} héritées de 
+  \texttt{Object}\footnote{\url{http://download.oracle.com/javase/6/docs/api/java/lang/Object.html}} 
+  (voir le menu \texttt{Source $\rightarrow$ Generate hashCode() and equals()...} dans Eclipse). Deux objets métiers
+  sont égaux si et seulement si les tuples associés sont égaux dans la base de données (\emph{i.e.} même valeur de clef). 
+\end{itemize}
+
+\Question
+Implémenter (en respectant les conventions ci-dessus) les classes \texttt{Etudiant}, \texttt{Module} et \texttt{Prof} dont le diagramme 
+UML incomplet vous est donné dans la figure~\ref{classe_metier}. Copier la classe \texttt{testJDBC} dans la nouvelle 
+classe \texttt{testEntite}. Modifier le code de cette classe pour que sa boucle principale remplisse un 
+\texttt{ArrayList}\footnote{\url{http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html}} d'objets 
+\texttt{Etudiant} et qu'elle affiche le contenu de cette liste en utilisant la méthode \texttt{toString()}.
+
+\begin{figure}\centering
+\begin{tikzpicture}[]
+
+\begin{class}[text width=3.5cm]{Module}{0,0}
+\attribute{-code : String }
+\attribute{-libelle : String}
+\attribute{-hCoursPrev : int}
+\attribute{-hCoursRea : int}
+\attribute{-hTpPrev : int}
+\attribute{-hTpRea : int}
+\attribute{-discipline : String}
+\attribute{-coefTest : int}
+\attribute{-coefCc : int}
+\end{class}
+
+\begin{class}[text width=4cm]{Prof}{5,0}
+\attribute{-numProf : int}
+\attribute{-nomProf : String}
+\attribute{-prenomProf : String}
+\attribute{-adrProf : String}
+\attribute{-cpProf : String}
+\attribute{-villeProf : String}
+\end{class}
+
+\begin{class}[text width=3.5cm]{Etudiant}{10,0}
+\attribute{-numEt : int}
+\attribute{-nomEt : String}
+\attribute{-prenomEt : String}
+\attribute{-cpEt : String}
+\attribute{-villeEt : String}
+\attribute{-annee : int}
+\attribute{-groupe : int}
+\end{class}
+\end{tikzpicture}
+\caption{Classe \texttt{Etudiant}, \texttt{Module} et \texttt{Prof}\label{classe_metier}}
+\end{figure}
+
+\subsubsection{Modélisation des types d'association hiérarchiques}
+Dans la figure~\ref{uml_gestion_peda} tous les types d'association binaires du MCD ont été représentés 
+par leurs équivalents en UML~\citep{book/Booch1999,book/Rumbaugh1998}. Ces associations UML sont symbolisées par un trait liant deux classes. 
+Les multiplicités (les nombres situés aux extrémités de l'association) correspondent aux cardinalités 
+du MCD mis à part qu'elles sont placées à l'inverse. Par exemple, pour indiquer qu'une classe \texttt{A}
+peut participer 0 ou 1 fois à une association avec la classe \texttt{B}, on placerait la 
+multiplicité \texttt{0..1} du coté de \texttt{B}. UML permet d'écrire certaines multiplicités de 
+manière simplifiée : \texttt{0..*} devient \texttt{*} et \texttt{1..1} devient \texttt{1}.
+
+\begin{figure}\centering
+
+\begin{tikzpicture}[]
+
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Prof}{9,0}
+\end{class}
+
+\draw [color=\umldrawcolor,text=\umltextcolor, rounded corners=2em, 
+       decoration={markings,mark=at position 1 with {\arrow[scale=2]{angle 60}}},
+       postaction={decorate}, shorten >=0.4pt] 
+       (Module.north)  to ++(0,1) to node[above] {Est père de $\RHD$} ++(-2.5,0) to ++(0,-1.5) to node[pos=0.7, above]{1} (Module.west)
+       node[very near end, above right]{*};
+
+\draw [color=\umldrawcolor,text=\umltextcolor, bend left, 
+       decoration={markings,mark=at position 1 with {\arrow[scale=2]{angle 60}}},
+       postaction={decorate}, shorten >=0.4pt] 
+(Module.20) to 
+node[very near end, below]{1}
+node [above]{A pour responsable $\RHD$}
+node[very near start, below]{*}  
+(Prof.160);
+
+\draw [color=\umldrawcolor,text=\umltextcolor, bend left,
+       decoration={markings,mark=at position 1 with {\arrow[scale=2]{angle 60}}},
+       postaction={decorate}, shorten >=0.4pt]  
+(Prof.200) to
+node[very near end, above]{1}
+node [below]{$\LHD$ Est spécialiste}
+node[very near start, above]{*}
+(Module.340);
+\end{tikzpicture}
+\caption{Association à navigabilité restreinte\label{uml_navigabilite}}
+\end{figure}
+
+Par défaut les associations sont bidirectionnelles, cela signifie qu'une instance à l'une 
+des extrémités peut savoir avec quelles autres instances elle est liée par 
+cette association. Dans la pratique, ce double lien peut être coûteux à maintenir, c'est 
+pourquoi UML permet de privilégier un seul sens en interdisant l'accès dans l'autre. 
+C'est ce que l'on appelle la restriction de la navigabilité d'une association. 
+Elle est symbolisée par une flèche indiquant le sens de navigation permis. 
+
+La figure~\ref{uml_navigabilite} montre le sens de navigation des trois types d'association 
+hiérarchiques de la base «~Gestion Pédagogique~». Les sens de navigation choisis imposent que :  
+\begin{itemize}
+	\item pour chaque instance de la classe \texttt{Prof} 
+  on connaitra le \texttt{Module} pour lequel il est spécialiste mais pour un \texttt{Module} on ne 
+  peut pas savoir quels sont les \texttt{Prof} spécialistes;
+  \item pour chaque instance de la classe \texttt{Module} 
+  on connaitra le \texttt{Prof} responsable mais pour un \texttt{Prof} on ne 
+  peut pas savoir quels sont les \texttt{Modules} dont il est responsable;
+  \item pour chaque instance de la classe \texttt{Module} 
+  on connaitra son \texttt{Module} père mais pour un \texttt{Module} donné on ne peut pas 
+  retrouver l'ensemble de ses fils.
+\end{itemize}
+
+\Question Implémenter en respectant le sens de navigation imposé l'association 
+\textit{«~est spécialiste~»} entre \texttt{Prof} et \texttt{Module}. 
+Un objet \texttt{Prof} n'étant associé qu'à un seul \texttt{Module}, il suffit d'ajouter à 
+la classe \texttt{Prof} un attribut \texttt{specialite} (sans oublier les accesseurs associés) qui est une référence vers un \texttt{Module}. 
+Il permet de lier un objet \texttt{Prof} à sa spécialité.
+
+Faire de même pour les deux autres TA hiérarchiques en respectant à chaque fois les sens de navigation de la
+figure~\ref{uml_navigabilite}. Copier la classe \texttt{testJDBC} dans la nouvelle classe \texttt{testAsso1}. 
+Modifier le code de cette classe pour remplir un \texttt{ArrayList} d'objets \texttt{Prof}. Pour chacun d'eux construire un objet
+\texttt{Module} représentant sa spécialité et conserver une référence vers cet objet dans l'attribut
+\texttt{specialite}. Afficher chacun des profs et le module dont il est spécialiste.
+
+
+\subsubsection{Modélisation des types d'association non hiérarchiques}
+Contrairement aux types d'association hiérarchiques qui peuvent être implémentés simplement par 
+des références (pointeurs en $C++$), les types d'association non hiérarchiques nécessitent une 
+structure supplémentaire~\citep{tse/Milicev2007,jot/Genova03,tse/Barbier2003}. Nous allons présenter trois manières d'implémenter ces 
+types d'association : les collections de pointeurs de chaque coté de l'association, 
+les objets d'association et la promotion d'une association en classe. Chacune de ces méthodes 
+d'implémentation a des avantages et des inconvénients qu'il faudra prendre en compte avant 
+de faire un choix.
+\paragraph{Collections de pointeurs aux extrémités de l'association :}
+La première méthode est en quelque sorte une extension de la technique 
+d'implémentation du paragraphe précédent. Pour simplifier la présentation, cette approche est 
+appliquée dans un premier temps sur l'association \texttt{Notation}, dans laquelle on ne considère pas les 
+données portées par l'association (\emph{cf.} figure~\ref{uml_notation1}). L'implémentation complète (en 
+rajoutant la classe d'association) de cette association sera faite dans un second temps.
+
+\begin{figure}\centering
+\begin{tikzpicture}
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+\begin{class}[text width=2cm]{Etudiant}{9,0}
+\end{class}
+\draw [color=\umldrawcolor,text=\umltextcolor] 
+(Module.east) to 
+node[very near end, below]{*}
+node [above]{Notation}
+node[very near start, below]{*}  
+(Etudiant.west);
+\end{tikzpicture}
+\caption{Association \texttt{Notation} sans considérer la classe d'association\label{uml_notation1}}
+\end{figure}
+
+Dans le cas de l'association «~\texttt{est spécialiste}~» où un \texttt{Prof} n'était lié qu'à un seul
+\texttt{Module}, il a suffi d'ajouter dans \texttt{Prof} une référence vers une instance de
+\texttt{Module}. Ici, un \texttt{Etudiant} peut être lié à plusieurs \texttt{Module}. On ajoute donc non pas 
+une seule référence, mais un ensemble (ou collection) de références, nommé \texttt{notations}, vers des objets \texttt{Module}. 
+Cette collection doit être d'un type implémentant l'interface \texttt{Set}\footnote{Les spécificités de 
+l'interface \texttt{Set} sont présentées sur la page suivante : 
+\url{http://java.sun.com/developer/onlineTraining/collections/Collection.html\#SetInterface}} tel que
+\texttt{HashSet} ou \texttt{TreeSet}. Cette contrainte garantit l'unicité des objets contenus dans la collection. 
+Ainsi, un même \texttt{Etudiant} ne peut pas être lié plusieurs fois à un même \texttt{Module}, ce
+qui indispensable pour modéliser correctement une association.
+
+Aucun sens de navigation n'étant privilégié, il faut rajouter de manière symétrique une collection appelée 
+\texttt{etudiants} dans \texttt{Module}. Cet ensemble de références vers des objets \texttt{Etudiant} rend 
+possible la navigation dans le sens inverse. Le diagramme de la figure~\ref{classe_notation_set} décrit 
+les changements apportés aux classes \texttt{Etudiant} et \texttt{Module} pour implémenter l'association.
+
+\begin{figure}\centering\footnotesize
+\begin{tikzpicture}[]
+\begin{class}[text width=5.5cm]{Module}{0,0}
+\attribute{-code : String }
+\attribute{-libelle : String}
+\attribute{-hCoursPrev : int}
+\attribute{-hCoursRea : int}
+\attribute{-hTpPrev : int}
+\attribute{-hTpRea : int}
+\attribute{-discipline : String}
+\attribute{-coefTest : int}
+\attribute{-coefCc : int}
+\attribute{-responsable : Prof}
+\attribute{-pere : Module}
+\attribute{\textbf{-etudiants : Set<Etudiant>}}
+\end{class}
+%
+\begin{class}[text width=5.5cm]{Etudiant}{10,0}
+\attribute{-numEt : int}
+\attribute{-nomEt : String}
+\attribute{-prenomEt : String}
+\attribute{-cpEt : String}
+\attribute{-villeEt : String}
+\attribute{-annee : int}
+\attribute{-groupe : int}
+\attribute{\textbf{-notations : Set<Module>}}
+\end{class}
+\end{tikzpicture}
+\caption{Classes \texttt{Module} et \texttt{Etudiant} utilisant deux \texttt{Set}\label{classe_notation_set}}
+\end{figure}
+
+\begin{figure}\centering
+\begin{tikzpicture}[]
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Etudiant}{8,0}
+\end{class}
+
+\begin{class}[text width=3cm]{Notation}{4,-2.5}
+\attribute{-moyCC : float }
+\attribute{-moyTest : float}
+\end{class}
+
+\draw [color=\umldrawcolor,text=\umltextcolor] (Module.east) -- node[](a){} (Etudiant.west)
+node[very near start, above]{*}
+node[very near end, above]{*};
+\draw [fill,color=\umldrawcolor,dashed] (a) circle (2pt)--(Notation);
+\end{tikzpicture}
+\caption{Association \texttt{Notation} en considérerant les attributs portés\label{uml_notation2}}
+\end{figure}
+
+L'implémentation proposée permet de savoir à quel \texttt{Module} un \texttt{Etudiant} est lié (et inversement)
+mais elle ne permet pas d'ajouter des informations supplémentaires aux liens. Pour implémenter l'association 
+comme dans la figure~\ref{uml_notation2}, il faut prendre en compte la classe d'association \texttt{Notation}. 
+Les ensembles de références sont remplacés par des dictionnaires (des conteneurs associatifs) pour atteindre cet objectif. 
+Un dictionnaire peut être globalement perçu, d'un point de vue fonctionnel, comme une sorte de tableau 
+indexable par n'importe quel type d'objet (plus seulement par des entiers). Malgré leur simplicité d'utilisation, ils ont 
+un coût d'accès plus élevé qu'un tableau classique~\citep{book/Sedgewick1998}. En Java, les conteneurs associatifs 
+sont des classes implémentant l'interface \texttt{Map}\footnote{Les spécificités de l'interface \texttt{Map} 
+sont présentées à la page \url{http://java.sun.com/developer/onlineTraining/collections/Collection.html\#MapInterface}} 
+(tel que \texttt{HashMap}). Ces classes permettent d'associer un objet clef (l'objet servant d'index) 
+à un objet valeur (n'importe quel autre objet). D'après le diagramme de classe de la figure~\ref{uml_notation2}, cet 
+objet valeur sera une référence vers un objet de la classe \texttt{Notation}. 
+Les modifications à apporter aux classes \texttt{Module} et \texttt{Etudiant} pour prendre en compte ces changements sont décrites 
+dans la figure~\ref{classe_notation_map}. Le lien \texttt{Notation} entre un \texttt{Etudiant} et un \texttt{Module} 
+est ainsi représenté sous forme de collections (associatives) de pointeurs de part et d'autre de l'association.
+
+\begin{figure}\centering\footnotesize
+\begin{tikzpicture}[]
+\begin{class}[text width=7cm]{Module}{0,0}
+\attribute{-code : String }
+\attribute{-libelle : String}
+\attribute{-hCoursPrev : int}
+\attribute{-hCoursRea : int}
+\attribute{-hTpPrev : int}
+\attribute{-hTpRea : int}
+\attribute{-discipline : String}
+\attribute{-coefTest : int}
+\attribute{-coefCc : int}
+\attribute{-responsable : Prof}
+\attribute{-pere : Module}
+\attribute{\textbf{-etudiants : Map<Etudiant, Notation>}}
+\end{class}
+
+\begin{class}[text width=7cm]{Etudiant}{8.5,0}
+\attribute{-numEt : int}
+\attribute{-nomEt : String}
+\attribute{-prenomEt : String}
+\attribute{-cpEt : String}
+\attribute{-villeEt : String}
+\attribute{-annee : int}
+\attribute{-groupe : int}
+\attribute{\textbf{-notations : Map<Module, Notation>}}
+\end{class}
+
+\end{tikzpicture}
+\caption{Classe \texttt{Module}, \texttt{Etudiant} avec prise en compte des notations\label{classe_notation_map}}
+\end{figure}
+
+\paragraph{Objets d'association :}
+L'approche précédente est relativement simple à mettre en œuvre du point de vue des 
+modifications à apporter aux différentes classes. La principale difficulté provient de 
+l'interdépendance entre objets qu'elle introduit. 
+En effet, chacun des objets participant à une association a la responsabilité de 
+construire et de maintenir à jour sa propre liste de liens. Si l'on souhaite supprimer un objet, 
+il faut avant cela supprimer cet objet dans chacune des listes des objets avec lequel il 
+est lié.  La responsabilité de la cohérence (réciprocité) d'un lien est partagée entre plusieurs 
+objets de classes différentes, il y a donc éparpillement du code de gestion l'association ce qui implique 
+un risque plus important d'erreur.
+
+Dans notre cas (application avec objets persistants en BD) une telle approche n'est pas envisageable, 
+car lorsque l'on doit rendre persistant un objet dans une base de données, cela implique de vérifier si les objets 
+avec lesquels il est lié sont déjà stockés dans la base de données. Or, cette tache 
+n'est pas du tout évidente d'un point de vue algorithmique et a un coût important s'il 
+existe un grand nombre de liens.
+
+La seconde solution~\citep{raool/Gessenharter2009} consiste à créer un unique objet qui aura la responsabilité de conserver 
+et gérer tous les liens d'une association. Cet objet ayant une vision globale des liens existants, 
+il peut facilement supprimer tous les liens entretenus par un seul et même objet. 
+De plus, un objet n'a plus à connaitre tous les objets qui lui sont liés mais uniquement l'objet 
+association qui pourra retrouver au besoin tous ces liens. En quelque sorte, cette approche 
+est une solution globale qui décharge les différents objets de la responsabilité de gérer chacun 
+des liens localement. Pour rendre persistante une association, il suffit de stocker tous les 
+objets connus par l'association avant de stocker l'objet d'association lui même.
+
+L'implémentation d'un objet d'association se fait en utilisant un  ensemble (\texttt{Set}) d'objet lien.
+Chaque objet lien est un $n$-uplet de références vers les différentes classes participant à l'association.
+La figure~\ref{classe_association_notation} donne le diagramme de classe de l'objet d'association \texttt{AssociationNotation}.
+Un \texttt{Lien} est dans notre cas un triplet d'étudiant, module et notation. Pour gérer correctement la contrainte d'unicité 
+de l'association, la classe \texttt{Lien} doit surcharger les méthodes \texttt{equals()} et \texttt{hashCode()} héritées de 
+\texttt{Object}\footnote{\url{http://download.oracle.com/javase/6/docs/api/java/lang/Object.html}}. Deux liens sont 
+considérés comme égaux s'ils référencent le même étudiant et le même module (peu importe la note).
+
+\begin{figure}\centering\footnotesize
+\begin{tikzpicture}
+\begin{singleton}[text width=8cm]{AssociationNotation}{0,0}
+\attribute{-liens : Set<Lien>}
+\attribute{-\underline{instance} : AssociationNotation}
+
+\operation{+creerLien(Module, Etudiant, Notation)}
+\operation{+suprimerLien(Module, Etudiant)}
+\operation{+suprimerLien(Lien)}
+
+\operation{+getLien(Module, Etudiant):Lien}
+\operation{+getLiens(Etudiant):Set<Lien>}
+\operation{+getLiens(Module):Set<Lien>}
+
+\operation{+getModules(Etudiant):Set<Module>}
+\operation{+getEtudiants(Module):Set<Etudiant>}
+
+\operation{+\underline{getInstance()} : AssociationNotation}
+\end{singleton}
+\begin{class}[text width=4.4cm]{Lien}{7,0}
+\attribute{-module : Module}
+\attribute{-etudiant : Etudiant}
+\attribute{-note : Notation}
+\operation{+Lien(Module, Etudiant)}
+\operation{+getModule():Module}
+\operation{+getEtudiant():Etudiant}
+\operation{+getNotation():Notation}
+\operation{+setNotation(note : Notation)}
+\end{class}
+\end{tikzpicture}
+\caption{Diagramme de classe de \texttt{AssociationNotation}\label{classe_association_notation}}
+\end{figure}
+
+\Question Implémenter l'association «~\texttt{Notation}~» entre \texttt{Etudiant} et \texttt{Module} en utilisant  
+l'objet d'association \texttt{AssociationNotation}.
+Copier la classe \texttt{testJDBC} dans la nouvelle classe \texttt{testAsso2}.
+Modifier le code de cette classe pour charger toutes les 
+notes des différents étudiants aux différents modules dans l'objet d'association \texttt{AssociationNotation}. 
+Pour simplifier les traitements, penser à charger l'ensemble des étudiants et des modules à l'avance.
+Afficher les étudiants et leurs notes pour le module 'ACSI'.
+
+\paragraph{Promotion d'une association en classe :}
+La dernière approche présentée a pour objectif de simplifier le diagramme de classe pour contourner le problème 
+des associations trop complexes à matérialiser. Comme nous venons de le voir, implémenter une association bidirectionnelle 
+non-hiérarchique demande un travail important. Généralement lorsque l'on rencontre des associations $n$-aires (avec $n>2$),
+l'une des techniques employées est de promouvoir cette association en une classe. Celle-ci sera liée par une association 
+hiérarchique à chacune des classes participant à l'ancienne association. Cette modification du diagramme de classe modifie 
+aussi partiellement sa sémantique. En effet, la contrainte d'unicité de l'association n'est plus vérifiée structurellement, 
+la responsabilité de cette contrainte revient au code de l'utilisateur. Il faudra en être conscient 
+avant de faire le choix d'utiliser cette solution.
+
+Dans notre base de données «~Gestion Pédagogique~» il n'y a qu'une seule association ternaire : \texttt{Enseignement}(\emph{cf.} 
+figure~\ref{uml_ternaire1}). Elle sera donc notre support pour mettre en pratique cette technique. 
+La figure~\ref{uml_ternaire2} montre les modifications à apporter à cette association pour la promouvoir en classe. 
+
+\begin{figure}\centering
+
+\begin{tikzpicture}[]
+
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Prof}{10,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Etudiant}{5,-4.5}
+\end{class}
+
+\ternaryassociation%
+{Module.south}%
+{Prof.south}%
+{Etudiant}%
+{Enseignement}
+\end{tikzpicture}
+\caption{Diagramme de classe de l'association ternaire \texttt{Enseignement}\label{uml_ternaire1}}
+\end{figure}
+
+\begin{figure}\centering
+
+\begin{tikzpicture}[]
+
+\begin{class}[text width=2cm]{Module}{0,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Prof}{10,0}
+\end{class}
+
+\begin{class}[text width=2cm]{Etudiant}{5,-5}
+\end{class}
+
+\begin{class}[text width=2.7cm]{Enseignement}{5,-2}
+\end{class}
+
+
+\draw [color=\umldrawcolor,text=\umltextcolor] 
+(Module.south east) to 
+node[very near end, below]{*}
+node [above]{$A_1$}
+node[very near start, below]{1}  
+(Enseignement);
+
+\draw [color=\umldrawcolor,text=\umltextcolor] 
+(Prof.south west) to 
+node[very near end, below]{*}
+node [above]{$A_2$}
+node[very near start, below]{1}  
+(Enseignement);
+
+\draw [color=\umldrawcolor,text=\umltextcolor] 
+(Etudiant) to 
+node[near end, right]{*}
+node [left]{$A_3$}
+node[near start, right]{1}  
+(Enseignement);
+
+\end{tikzpicture}
+\caption{Diagramme de classe de l'association ternaire \texttt{Enseignement}\label{uml_ternaire2}}
+\end{figure}    
+
+\Question Implémenter l'association «~\texttt{Enseignement}~» entre \texttt{Etudiant}, \texttt{Module} et \texttt{Prof} 
+en utilisant le diagramme de classe donné par la figure~\ref{uml_ternaire2}. 
+Modifier chacune des classes participantes pour que les associations $A_i$ soient navigables dans les deux sens. 
+Copier la classe \texttt{testJDBC} dans la nouvelle classe \texttt{testAsso2}.
+Modifier le code de cette classe pour charger tous les enseignements. 
+Afficher tous les enseignements suivis par les étudiants du groupe 1.
+
+\subsection{Construction de la couche d'accès aux données}
+Les paragraphes précédents ont présenté comment construire le modèle objet miroir du modèle relationnel.
+L'objectif est maintenant d'écrire le code permettant de faire communiquer ces deux modèles.
+Les questions ont mis en évidence la difficulté (et l'aspect répétitif) d'écrire un tel code avec JDBC . 
+Utiliser directement JDBC à chaque accès aux données produirait deux effets très négatifs : 
+\begin{itemize}
+ 	\item Une pollution importante du code métier par du code JDBC. Cela implique donc une moins 
+ 	grande lisibilité du code et ainsi un risque d'erreur plus important.
+ 	\item Une moins grande indépendance vis à vis du SGBD. L'intrication forte entre code métier et 
+ 	code d'accès au données rend le changement de SGBD (par exemple le remplacement de Oracle par Postgres) 
+ 	très délicat voir impossible.
+\end{itemize} 
+Pour éviter ces problèmes, nous allons construire une couche dédiée à l'accès aux données 
+qui utilisera le pattern DAO\footnote{\url{http://java.sun.com/blueprints/corej2eepatterns/Patterns/DataAccessObject.html}} (Data Access Object).
+Cette couche encapsulera tous les accès à la source de données. Les autres parties de l'application 
+utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle 
+sera donc une sorte d'abstraction du modèle de données indépendante de la solution de stockage 
+des données. La couche DAO contiendra au moins autant de classes de DAO que d'entités du MCD (classe d'objet métier) 
+\footnote{L'écriture et la maintenance d'une telle couche est donc une opération généralement fastidieuse. 
+C'est l'une des raisons pour lesquelles les solutions de persistance actuelles génèrent 
+automatiquement une grande partie du code (Java et/ou \textsc{Sql}).}.
+
+\begin{figure}\centering\footnotesize
+\begin{tikzpicture}
+\begin{singleton}[text width=7cm]{DAOEtudiant}{0,0}
+\attribute{-\underline{instance} : DAOEtudiant}
+
+\operation{+insert(Etudiant):Etudiant}
+\operation{+delete(Etudiant):boolean}
+\operation{+update(Etudiant):boolean}
+
+\operation{+getById(numEt:int):Etudiant}
+
+\operation{+findAll():List<Etudiant>}
+\operation{+findByNom(NomEt:String):List<Etudiant>}
+\operation{+findByGroupe(Groupe:int):List<Etudiant>}
+\operation{+findByAnnee(Annee:int):List<Etudiant>}
+
+\operation{+computeMoyennePonderee(Etudiant):float}
+\operation{+computeNbEtudiant():int}
+
+\operation{+\underline{getInstance()} : DAOEtudiant}
+\end{singleton}
+\end{tikzpicture}
+\caption{Diagramme de classe de \texttt{DAOEtudiant}\label{dao_etudiant}}
+\end{figure}
+
+La source de données étant une ressource unique, il n'existera qu'une seule instance de chacune 
+des classes de DAO. Elles devront donc toutes être des singletons (\emph{cf.} classes 
+\texttt{ConnexionUnique} et \texttt{AssociationNotation} ). Chacune d'elles devra contenir 
+des méthodes pour effectuer les 4 opérations de base pour la persistance des données : 
+\textit{créer, récupérer, mettre à jour et supprimer}\footnote{Généralement désigné par l'acronyme anglais CRUD pour 
+\textit{Create, Retrieve, Update et Delete}}. Par convention, chacune des classes de DAO devra être 
+nommée par "\texttt{DAO}" suivi due nom de la classe métier associée. La figure~\ref{dao_etudiant} 
+décrit la classe \texttt{DAOEtudiant} qui est le DAO associé à la classe d'objet métier \texttt{Etudiant}.
+Cette classe est constituée des méthodes suivantes :
+\begin{itemize}
+	\item \texttt{insert} qui à pour objectif de créer un nouvel étudiant dans la base de données.
+	L'identifiant d'un tuple ne pouvant être connu avant son insertion, cette méthode retourne 
+	une copie de l'objet métier passé en paramètre avec un identifiant définitif. L'identité d'un 
+	objet dépendant uniquement de l'identifiant, un objet métier créé localement avec le 
+	constructeur par défaut (objet temporaire sans identité propre du point de vue de 
+	\texttt{equals()} et \texttt{hashCode()}) ne devra participer à aucune association 
+	avant d'être inséré dans la base avec cette méthode\footnote{Ces objets sans identité jouent le rôle des objets 
+	de transfert de données (\textit{Data Transfer Object}) du pattern DAO original.}.
+
+	\item \texttt{update} qui prend un objet métier en paramètre et essaie faire la mise à jour 
+	dans la base de données. La valeur retournée par cette méthode indique si la mise à jour 
+	a pu avoir lieu.
+	
+  \item \texttt{delete} qui prend un étudiant en paramètre et essaie de le supprimer de la base 
+  de données. La valeur retournée par cette méthode indique si la suppression a pu avoir lieu.
+  
+  \item les \texttt{get} qui constituent, avec les \texttt{find}, les méthodes 
+  de récupération des données. Les paramètres passés à ces méthodes permettent de récupérer
+  uniquement les tuples satisfaisants certains critères. La différence entre ces deux 
+  familles de méthodes est que les \texttt{get} doivent retourner exactement un seul 
+  résultat alors que les \texttt{find} peuvent en retourner plusieurs.
+  
+  \item les \texttt{compute} qui, comme leur nom l'indique, ont pour objectif d'effectuer des 
+  calculs sur les étudiants. La plupart du temps (sauf si le calcul demande de ne rapatrier 
+  aucune donnée) on préférera, pour des raisons d'efficacité, le faire directement dans le \texttt{Sgbd}. 
+  Ces méthodes sont donc soit des requêtes \textsc{Sql} agrégatives soit des appels de procédures stockées.	
+\end{itemize}
+
+En utilisant \texttt{DAOEtudiant}, la récupération par l'application de l'étudiant d'identifiant 1 dans la base de données 
+se déroule comme suit :
+\begin{enumerate}
+ 	\item L'application demande un objet \texttt{Etudiant} correspondant au tuple d'identifiant 1 dans la base de données 
+ 	à l'unique instance de \texttt{DAOEtudiant}.
+  \item L'objet \texttt{DAOEtudiant} récupère cette demande (méthode \texttt{getByID(1)} ) et il s'occupe d'exécuter la 
+  requête SQL avec JDBC.
+  \item Le \textsc{Sgbd} interprète la requête SQL et retourne le résultat attendu (s'il existe).
+  \item L'objet \texttt{DAOEtudiant} récupère ces informations.
+  \item L'objet \texttt{DAOEtudiant} instancie un objet \texttt{Etudiant} avec les données récupérées.
+  \item Enfin, l'objet \texttt{DAOEtudiant} retourne l'instance de l'objet \texttt{Etudiant}.
+\end{enumerate}
+
+Cette séquence d'opération illustre bien le rôle central de l'objet DAO dans l'accès aux données. Les opérations de mise 
+à jour et de suppression se dérouleront à peu près de la même manière. Pour l'insertion d'un nouveau tuple, il faudra 
+d'abord créer un objet sans identité (avec le constructeur par défaut) puis appeler la méthode \texttt{insert()} qui nous 
+retournera notre objet définitif (avec un identifiant valide). Le code ci-dessous illustre l'utilisation typique du DAO 
+pour l'ajout d'un nouvel étudiant et sa modification :
+\begin{lstlisting}[language=java]
+public class Main {
+  public static void main(String[] args){
+    DAOEtudiant dao = DAOEtudiant.getInstance();
+    Etudiant e = new Etudiant();//e est un Etudiant temporaire
+    e.setNom("Dupont");
+    e.setPrenom("Paul");
+    e.setCp("13100");
+    e.setVille("Aix-en-Provence");
+    e.setAnnee(1);//Modification des attributs de e 
+    e.setGroupe(5);
+    e = dao.insert(e);//e referencie maintenant un Etudiant definitif
+    ...
+    e.setAnnee(2);// Modification des attributs de e 
+    e.setGroupe(3);
+    ...
+    boolean updateOk = dao.update(e);//Sauvegarde des modifications
+    ...
+  }
+}
+\end{lstlisting}
+Tous les DAO de notre application ont un certain nombre de méthodes communes. Pour améliorer l'indépendance du code client
+vis à vis de la couche de persistance, nous ajoutons une interface \texttt{DAO} que tous les objets DAO devront implémenter. 
+Les objets métiers dépendront ainsi d'une interface et non d'une implémentation particulière. La figure~\ref{dao_gestion_peda}
+donne le diagramme de classe de l'ensemble des DAO de l'application gestion pédagogique. Dans sa version complète, le 
+pattern présenté utilise des \texttt{Factory} pour améliorer encore la modularité de la couche de persistance.  
+
+
+\begin{figure}\centering\footnotesize
+\begin{tikzpicture}
+\begin{interface}[text width=4cm]{DAO<T>}{6,0}
+\operation{+insert(T):T}
+\operation{+delete(T):boolean}
+\operation{+update(T):boolean}
+\operation{+getById(numT:int):T}
+\operation{+findAll():List<T>}
+\end{interface}
+
+\begin{interface}[text width=2.6cm]{DAONotation}{0,-5}
+\end{interface}
+
+\begin{class}[text width=2.6cm]{DAONotationI}{0,-8}
+\end{class}
+
+\begin{interface}[text width=2.5cm]{DAOEtudiant}{3,-5}
+\end{interface}
+
+\begin{class}[text width=2.5cm]{DAOEtudiantI}{3,-8}
+\end{class}
+
+
+\begin{interface}[text width=2.3cm]{DAOModule}{6,-5}
+\end{interface}
+
+\begin{class}[text width=2.3cm]{DAOModuleI}{6,-8}
+\end{class}
+
+
+\begin{interface}[text width=2.3cm]{DAOProf}{8.7,-5}
+\end{interface}
+
+\begin{class}[text width=2.3cm]{DAOProfI}{8.7,-8}
+\end{class}
+
+
+\begin{interface}[text width=3.2cm]{DAOEnseignement}{12,-5}
+\end{interface}
+
+\begin{class}[text width=3.3cm]{DAOEnseignementI}{12,-8}
+\end{class}
+
+
+\draw [umlcd style inherit line] (DAO<T>) -- (DAONotation);
+\draw [umlcd style inherit line] (DAO<T>) -- (DAOEtudiant);
+\draw [umlcd style inherit line] (DAO<T>) -- (DAOModule);
+\draw [umlcd style inherit line] (DAO<T>) -- (DAOProf);
+\draw [umlcd style inherit line] (DAO<T>) -- (DAOEnseignement);
+
+\draw [umlcd style implement line] (DAONotation) -- (DAONotationI);
+\draw [umlcd style implement line] (DAOEtudiant) -- (DAOEtudiantI);
+\draw [umlcd style implement line] (DAOModule) -- (DAOModuleI);
+\draw [umlcd style implement line] (DAOProf) -- (DAOProfI);
+\draw [umlcd style implement line] (DAOEnseignement) -- (DAOEnseignementI);
+
+\end{tikzpicture}
+\caption{Diagramme de classe de la couche DAO de l'application gestion pédagogique\label{dao_gestion_peda}}
+\end{figure}
+
+\Question
+Implémenter les classes \texttt{DAOEtudiant}\footnote{Pour ceux qui n'auraient pas terminé la première partie du TP, un 
+squelette des classes métiers est disponible à l'adresse suivante : \url{http://allegro.iut.univ-aix.fr/~nedjar/testJdbc.tar.bz2}} 
+dont le diagramme de classe incomplet vous est donné par la figure~\ref{dao_etudiant}. 
+\Question
+Implémenter toutes les classes \texttt{DAO} en prenant en compte intéligement les associations existant entre les 
+différentes classes métiers. Copier la classe \texttt{testJDBC} dans la nouvelle classe \texttt{testDAO}. Modifier le 
+code de celle-ci pour que sa boucle principale récupère tous les étudiants de deuxième années, les affiche, puis 
+augmente toutes leurs notes pour le module « ACSI » d'un point et enfin sauvegarde les résultats dans la base.
+
+\bibliographystyle{apalike}
+\bibliography{biblio}
+\end{document}
+
