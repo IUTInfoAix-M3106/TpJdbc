@@ -8,9 +8,9 @@
   DROP TABLE ENSEIGNT;
 -- PROMPT Droping Table NOTATION
   DROP TABLE NOTATION;
---------------------------------------------------------
+--
 --  DDL for Table ETUDIANT
---------------------------------------------------------
+--
 -- PROMPT Creating Table ETUDIANT 
   CREATE TABLE ETUDIANT 
    (	NUM_ET DECIMAL(6,0), 
@@ -22,9 +22,9 @@
 	GROUPE DECIMAL(1,0)
    ) ;
    
---------------------------------------------------------
+--
 --  DDL for Table PROF
---------------------------------------------------------
+--
 -- PROMPT Creating Table PROF 
   CREATE TABLE PROF 
    (	NUM_PROF DECIMAL(3,0), 
@@ -35,9 +35,9 @@
 	VILLE_PROF VARCHAR(30), 
 	MAT_SPEC VARCHAR(7)
    ) ;
---------------------------------------------------------
+--
 --  DDL for Table MODULE
---------------------------------------------------------
+--
 -- -- PROMPT Creating Table MODULE 
   CREATE TABLE MODULE 
    (	CODE VARCHAR(7), 
@@ -52,18 +52,18 @@
 	RESP DECIMAL(3,0), 
 	CODEPERE VARCHAR(7)
    ) ;
---------------------------------------------------------
+--
 --  DDL for Table ENSEIGNT
---------------------------------------------------------
+--
 -- -- PROMPT Creating Table ENSEIGNT 
   CREATE TABLE ENSEIGNT 
    (	CODE VARCHAR(7), 
 	NUM_PROF DECIMAL(3,0), 
 	NUM_ET DECIMAL(6,0)
    ) ;
---------------------------------------------------------
+--
 --  DDL for Table NOTATION
---------------------------------------------------------
+--
 -- -- PROMPT Creating Table NOTATION 
   CREATE TABLE NOTATION 
    (	NUM_ET DECIMAL(6,0), 
@@ -72,10 +72,10 @@
 	MOY_TEST DECIMAL(2,0)
    ) ;
 
----------------------------------------------------
+--
 --   DATA FOR TABLE ENSEIGNT
 --   FILTER = none used
----------------------------------------------------
+--
 -- PROMPT Inserting into ENSEIGNT
 Insert into ENSEIGNT (CODE,NUM_PROF,NUM_ET) values ('ACSI',1,2101);
 Insert into ENSEIGNT (CODE,NUM_PROF,NUM_ET) values ('ACSI',1,2102);
@@ -199,14 +199,14 @@ Insert into ENSEIGNT (CODE,NUM_PROF,NUM_ET) values ('SYS',5,2404);
 Insert into ENSEIGNT (CODE,NUM_PROF,NUM_ET) values ('SYS',7,2317);
 Insert into ENSEIGNT (CODE,NUM_PROF,NUM_ET) values ('SYS',15,2317);
 
----------------------------------------------------
+--
 --   END DATA FOR TABLE ENSEIGNT
----------------------------------------------------
+--
 
----------------------------------------------------
+--
 --   DATA FOR TABLE MODULE
 --   FILTER = none used
----------------------------------------------------
+--
 -- PROMPT Inserting into MODULE
 Insert into MODULE (CODE,LIBELLE,H_COURS_PREV,H_COURS_REA,H_TP_PREV,H_TP_REA,DISCIPLINE,COEFF_TEST,COEFF_CC,RESP,CODEPERE) values ('PPNINFO','PROGRAMME DUT INFO',null,null,null,null,null,null,null,null,null);
 Insert into MODULE (CODE,LIBELLE,H_COURS_PREV,H_COURS_REA,H_TP_PREV,H_TP_REA,DISCIPLINE,COEFF_TEST,COEFF_CC,RESP,CODEPERE) values ('PINFO2','INFORMATIQUE 2EME ANNEE',null,null,null,null,'INFORMATIQUE',null,null,null,'PPNINFO');
@@ -242,14 +242,14 @@ Insert into MODULE (CODE,LIBELLE,H_COURS_PREV,H_COURS_REA,H_TP_PREV,H_TP_REA,DIS
 Insert into MODULE (CODE,LIBELLE,H_COURS_PREV,H_COURS_REA,H_TP_PREV,H_TP_REA,DISCIPLINE,COEFF_TEST,COEFF_CC,RESP,CODEPERE) values ('RO','RECHERCHE OPERATIONNELLE',20,null,25,null,'MATHS',50,50,null,'MATH2');
 Insert into MODULE (CODE,LIBELLE,H_COURS_PREV,H_COURS_REA,H_TP_PREV,H_TP_REA,DISCIPLINE,COEFF_TEST,COEFF_CC,RESP,CODEPERE) values ('BD','BASES DE DONNEES',20,null,60,null,'INFORMATIQUE',60,40,3,'OMGL2');
 
----------------------------------------------------
+--
 --   END DATA FOR TABLE MODULE
----------------------------------------------------
+--
 
----------------------------------------------------
+--
 --   DATA FOR TABLE NOTATION
 --   FILTER = none used
----------------------------------------------------
+--
 -- PROMPT Inserting into NOTATION
 Insert into NOTATION (NUM_ET,CODE,MOY_CC,MOY_TEST) values (2406,'ACSI',11,15);
 Insert into NOTATION (NUM_ET,CODE,MOY_CC,MOY_TEST) values (2404,'ACSI',10,13);
@@ -331,14 +331,14 @@ Insert into NOTATION (NUM_ET,CODE,MOY_CC,MOY_TEST) values (2202,'BD',17,null);
 Insert into NOTATION (NUM_ET,CODE,MOY_CC,MOY_TEST) values (2207,'BD',13,12);
 Insert into NOTATION (NUM_ET,CODE,MOY_CC,MOY_TEST) values (2209,'BD',6,null);
 
----------------------------------------------------
+--
 --   END DATA FOR TABLE NOTATION
----------------------------------------------------
+--
 
----------------------------------------------------
+--
 --   DATA FOR TABLE PROF
 --   FILTER = none used
----------------------------------------------------
+--
 -- PROMPT Inserting into PROF
 Insert into PROF (NUM_PROF,NOM_PROF,PRENOM_PROF,ADR_PROF,CP_PROF,VILLE_PROF,MAT_SPEC) values (1,'BOITARD','DIDIER',null,null,'AIX-EN-PROVENCE','ACSI');
 Insert into PROF (NUM_PROF,NOM_PROF,PRENOM_PROF,ADR_PROF,CP_PROF,VILLE_PROF,MAT_SPEC) values (2,'FAURE','BERNARD',null,null,'AIX-EN-PROVENCE','ACSI');
@@ -358,14 +358,14 @@ Insert into PROF (NUM_PROF,NOM_PROF,PRENOM_PROF,ADR_PROF,CP_PROF,VILLE_PROF,MAT_
 Insert into PROF (NUM_PROF,NOM_PROF,PRENOM_PROF,ADR_PROF,CP_PROF,VILLE_PROF,MAT_SPEC) values (16,'BONHOMME','CHRISTIAN',null,null,'MARSEILLE','BD');
 Insert into PROF (NUM_PROF,NOM_PROF,PRENOM_PROF,ADR_PROF,CP_PROF,VILLE_PROF,MAT_SPEC) values (17,'SUN','PIERRE',null,null,'MARSEILLE','ACSI');
 
----------------------------------------------------
+--
 --   END DATA FOR TABLE PROF
----------------------------------------------------
+--
 
----------------------------------------------------
+--
 --   DATA FOR TABLE ETUDIANT
 --   FILTER = none used
----------------------------------------------------
+--
 -- PROMPT Inserting into ETUDIANT
 Insert into ETUDIANT (NUM_ET,NOM_ET,PRENOM_ET,CP_ET,VILLE_ET,ANNEE,GROUPE) values (2101,'ALARCON','LAURENT',null,null,2,1);
 Insert into ETUDIANT (NUM_ET,NOM_ET,PRENOM_ET,CP_ET,VILLE_ET,ANNEE,GROUPE) values (2102,'ARNAUD','EMMANUEL',null,'AIX-EN-PROVENCE',2,1);
