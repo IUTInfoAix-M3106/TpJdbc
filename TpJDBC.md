@@ -100,29 +100,32 @@ modifications seront apportées à ce modèle pour le rendre implémentable.
 
 ### Modélisation des types d’entités
 
-Pour établir une correspondance entre une entité de notre BD et un objet de notre application, il faut commencer par écrire les classes associées à chacun des types d’entités. Pour des raisons qui apparaitront plus tard, chaque classe métier devra suivre les conventions suivantes :
+Pour établir une correspondance entre une entité de notre BD et un objet de notre application, il faut commencer par 
+écrire les classes associées à chacun des types d’entités. Pour des raisons qui apparaitront plus tard, chaque classe 
+métier devra suivre les conventions suivantes :
 
--   La classe doit être « sérialisable »[8] (*i.e.* implémenter l’interface `Serializable`) pour pouvoir sauvegarder et restaurer l’état des instances de cette classe ;
+-   La classe doit être « sérialisable »[8] (*i.e.* implémenter l’interface `Serializable`) pour pouvoir sauvegarder et 
+restaurer l’état des instances de cette classe ;
 
 -   La classe doit posséder un constructeur sans argument (constructeur par défaut);
 
--   Les propriétés privées de la classe (variables d’instances) doivent être accessibles publiquement via des méthodes accesseurs construites avec `get` ou `set` suivi du nom de la propriété avec la première lettre transformée en majuscule (voir le menu `Source \rightarrow Generate Getters and Setters...` dans Eclipse).
+-   Les propriétés privées de la classe (variables d’instances) doivent être accessibles publiquement via des méthodes 
+accesseurs construites avec `get` ou `set` suivi du nom de la propriété avec la première lettre transformée en 
+majuscule (utiliser les fonctionnalités de génération de l'IDE).
 
--   La classe doit surcharger la méthode `toString()` pour pouvoir afficher l’état des instances de cette classe (voir le menu `Source \rightarrow Generate toString()` dans Eclipse).
+-   La classe doit surcharger la méthode `toString()` pour pouvoir afficher l’état des instances de cette classe (voir 
+les capacités de génération de l'IDE).
 
--   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de `Object`[9] (voir le menu `Source \rightarrow Generate hashCode() and equals()...` dans Eclipse). Deux objets métiers sont égaux si et seulement si les tuples associés sont égaux dans la base de données (*i.e.* même valeur de clef).
-
+-   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de `Object`[9]
 #### Question  :
 
-Implémenter (en respectant les conventions ci-dessus) les classes `Etudiant`, `Module` et `Prof` dont le diagramme UML incomplet vous est donné dans la figure \[classe\_metier\]. Copier la classe `testJDBC` dans la nouvelle classe `testEntite`. Modifier le code de cette classe pour que sa boucle principale remplisse un `ArrayList`[10] d’objets `Etudiant` et qu’elle affiche le contenu de cette liste en utilisant la méthode `toString()`.
+Implémenter (en respectant les conventions ci-dessus) les classes `Etudiant`, `Module` et `Prof` dont le diagramme UML 
+incomplet vous est donné dans la figure ci-après. Copier la classe `TestConnexion` dans la nouvelle classe `TestEntite`. 
+Modifier le code de cette classe pour que sa boucle principale remplisse un `ArrayList`[10] d’objets `Etudiant` et qu’elle 
+affiche le contenu de cette liste en utilisant la méthode `toString()`.
 
-\[\]
+![Diagramme de classe des entités](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/ClassesMetier.puml)
 
-\[text width=3.5cm\]<span>Module</span><span>0,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
-
-\[text width=4cm\]<span>Prof</span><span>5,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
-
-\[text width=3.5cm\]<span>Etudiant</span><span>10,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
 
 ### Modélisation des types d’association hiérarchiques
 
