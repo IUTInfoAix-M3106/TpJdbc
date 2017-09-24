@@ -12,6 +12,6 @@ class Notation{
 }
 
 Etudiant "*" - "*" Module
-(Etudiant, Module) .down Notation
+(Etudiant, Module) .. Notation
 
 @enduml

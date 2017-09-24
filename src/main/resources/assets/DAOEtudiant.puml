@@ -1,0 +1,17 @@
+@startuml
+scale 2
+class DAOEtudiant{
+- connection Connection
++insert(Etudiant):Etudiant
++delete(Etudiant):boolean
++update(Etudiant):boolean
++getById(numEt:int):Etudiant
++findAll():List<Etudiant>
++findByNom(NomEt:String):List<Etudiant>
++findByGroupe(Groupe:int):List<Etudiant>
++findByAnnee(Annee:int):List<Etudiant>
++computeMoyenne(Etudiant):float
++computeNbEtudiant():int
+}
+
+@enduml

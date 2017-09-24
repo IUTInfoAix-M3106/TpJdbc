@@ -249,123 +249,94 @@ notation. Pour gérer correctement la contrainte d’unicité de l’association
 méthodes `equals()` et `hashCode()` héritées de `Object`[13]. Deux liens sont considérés comme égaux s’ils référencent 
 le même étudiant et le même module (peu importe la note).
 
-
 ![Diagramme de classe de `AssociationNotation`](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/AssociationNotation.puml)
-
-
 
 #### Question  :
 
-Implémenter l’association « `Notation` » entre `Etudiant` et `Module` en utilisant l’objet d’association `AssociationNotation`. Copier la classe `testJDBC` dans la nouvelle classe `testAsso2`. Modifier le code de cette classe pour charger toutes les notes des différents étudiants aux différents modules dans l’objet d’association `AssociationNotation`. Pour simplifier les traitements, penser à charger l’ensemble des étudiants et des modules à l’avance. Afficher les étudiants et leurs notes pour le module ’ACSI’.
+Implémenter l’association « `Notation` » entre `Etudiant` et `Module` en utilisant l’objet d’association `AssociationNotation`. 
+Copier la classe `TestAsso1` dans la nouvelle classe `TestAsso2`. Modifier le code de cette classe pour charger toutes 
+les notes des différents étudiants aux différents modules dans l’objet d’association `AssociationNotation`. Pour 
+simplifier les traitements, penser à charger l’ensemble des étudiants et des modules à l’avance. Afficher les étudiants 
+et leurs notes pour le module ’ACSI’.
 
 #### Promotion d’une association en classe :
 
-La dernière approche présentée a pour objectif de simplifier le diagramme de classe pour contourner le problème des associations trop complexes à matérialiser. Comme nous venons de le voir, implémenter une association bidirectionnelle non-hiérarchique demande un travail important. Généralement lorsque l’on rencontre des associations *n*-aires (avec *n* &gt; 2), l’une des techniques employées est de promouvoir cette association en une classe. Celle-ci sera liée par une association hiérarchique à chacune des classes participant à l’ancienne association. Cette modification du diagramme de classe modifie aussi partiellement sa sémantique. En effet, la contrainte d’unicité de l’association n’est plus vérifiée structurellement, la responsabilité de cette contrainte revient au code de l’utilisateur. Il faudra en être conscient avant de faire le choix d’utiliser cette solution.
+La dernière approche présentée a pour objectif de simplifier le diagramme de classe pour contourner le problème des 
+associations trop complexes à matérialiser. Comme nous venons de le voir, implémenter une association bidirectionnelle 
+non-hiérarchique demande un travail important. Généralement lorsque l’on rencontre des associations *n*-aires (avec *n* &gt; 2), 
+l’une des techniques employées est de promouvoir cette association en une classe. Celle-ci sera liée par une association 
+hiérarchique à chacune des classes participant à l’ancienne association. Cette modification du diagramme de classe modifie 
+aussi partiellement sa sémantique. En effet, la contrainte d’unicité de l’association n’est plus vérifiée structurellement, 
+la responsabilité de cette contrainte revient au code de l’utilisateur. Il faudra en être conscient avant de faire le 
+choix d’utiliser cette solution.
 
-Dans notre base de données « Gestion Pédagogique » il n’y a qu’une seule association ternaire : `Enseignement`(*cf.* figure \[uml\_ternaire1\]). Elle sera donc notre support pour mettre en pratique cette technique. La figure \[uml\_ternaire2\] montre les modifications à apporter à cette association pour la promouvoir en classe.
-
-\[\]
-
-\[text width=2cm\]<span>Module</span><span>0,0</span>
-
-\[text width=2cm\]<span>Prof</span><span>10,0</span>
-
-\[text width=2cm\]<span>Etudiant</span><span>5,-4.5</span>
-
-<span>Module.south</span><span>Prof.south</span><span>Etudiant</span><span>Enseignement</span>
-
-\[\]
-
-\[text width=2cm\]<span>Module</span><span>0,0</span>
-
-\[text width=2cm\]<span>Prof</span><span>10,0</span>
-
-\[text width=2cm\]<span>Etudiant</span><span>5,-5</span>
-
-\[text width=2.7cm\]<span>Enseignement</span><span>5,-2</span>
-
-(Module.south east) to node\[very near end, below\]<span>\*</span> node \[above\]<span>*A*<sub>1</sub></span> node\[very near start, below\]<span>1</span> (Enseignement);
-
-(Prof.south west) to node\[very near end, below\]<span>\*</span> node \[above\]<span>*A*<sub>2</sub></span> node\[very near start, below\]<span>1</span> (Enseignement);
-
-(Etudiant) to node\[near end, right\]<span>\*</span> node \[left\]<span>*A*<sub>3</sub></span> node\[near start, right\]<span>1</span> (Enseignement);
+Dans notre base de données « Gestion Pédagogique » il n’y a qu’une seule association ternaire : `Enseignement`. Elle 
+sera donc notre support pour mettre en pratique cette technique. 
 
 #### Question  :
-
-Implémenter l’association « `Enseignement` » entre `Etudiant`, `Module` et `Prof` en utilisant le diagramme de classe donné par la figure \[uml\_ternaire2\]. Modifier chacune des classes participantes pour que les associations *A*<sub>*i*</sub> soient navigables dans les deux sens. Copier la classe `testJDBC` dans la nouvelle classe `testAsso2`. Modifier le code de cette classe pour charger tous les enseignements. Afficher tous les enseignements suivis par les étudiants du groupe 1.
+Implémenter l’association « `Enseignement` » entre `Etudiant`, `Module` et `Prof` en transformant l'association en une classe. 
+Modifier chacune des classes participantes pour que les associations *A*<sub>*i*</sub> soient navigables dans les deux sens. 
+Copier la classe `TestAsso2` dans la nouvelle classe `TestAsso3`. Modifier le code de cette classe pour charger tous les 
+enseignements. Afficher tous les enseignements suivis par les étudiants du groupe 1.
 
 Construction de la couche d’accès aux données
 ---------------------------------------------
 
-Les paragraphes précédents ont présenté comment construire le modèle objet miroir du modèle relationnel. L’objectif est maintenant d’écrire le code permettant de faire communiquer ces deux modèles. Les questions ont mis en évidence la difficulté (et l’aspect répétitif) d’écrire un tel code avec JDBC . Utiliser directement JDBC à chaque accès aux données produirait deux effets très négatifs :
+Les paragraphes précédents ont présenté comment construire le modèle objet miroir du modèle relationnel. L’objectif est 
+maintenant d’écrire le code permettant de faire communiquer ces deux modèles. Les questions ont mis en évidence la 
+difficulté (et l’aspect répétitif) d’écrire un tel code avec JDBC. Utiliser directement JDBC à chaque accès aux données 
+produirait deux effets très négatifs :
 
--   Une pollution importante du code métier par du code JDBC. Cela implique donc une moins grande lisibilité du code et ainsi un risque d’erreur plus important.
+-  Une pollution importante du code métier par du code JDBC. Cela implique donc une moins grande lisibilité du code et 
+ainsi un risque d’erreur plus important.
 
--   Une moins grande indépendance vis à vis du SGBD. L’intrication forte entre code métier et code d’accès au données rend le changement de SGBD (par exemple le remplacement de Oracle par Postgres) très délicat voir impossible.
+-   Une moins grande indépendance vis à vis du SGBD. L’intrication forte entre code métier et code d’accès au données 
+rend le changement de SGBD (par exemple le remplacement de Oracle par Postgres) très délicat voir impossible.
 
-Pour éviter ces problèmes, nous allons construire une couche dédiée à l’accès aux données qui utilisera le pattern DAO[14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de l’application utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle sera donc une sorte d’abstraction du modèle de données indépendante de la solution de stockage des données. La couche DAO contiendra au moins autant de classes de DAO que d’entités du MCD (classe d’objet métier) [15].
+Pour éviter ces problèmes, nous allons construire une couche dédiée à l’accès aux données qui utilisera le pattern 
+DAO[14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de 
+l’application utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle sera donc une sorte 
+d’abstraction du modèle de données indépendante de la solution de stockage des données. La couche DAO contiendra au 
+moins autant de classes de DAO que d’entités du MCD (classe d’objet métier) [15].
 
-\[text width=7cm\]<span>DAOEtudiant</span><span>0,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
+La source de données étant une ressource unique, il n’existera qu’une seule instance de chacune des classes de DAO. Elles 
+devront donc toutes être des singletons (*cf.* classes `ConnexionUnique` et `AssociationNotation` ). Chacune d’elles 
+devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, 
+mettre à jour et supprimer*[16]. Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom 
+de la classe métier associée. La figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la 
+classe d’objet métier `Etudiant`. 
 
-0=1
+![Diagramme de classe de `DAOEtudiant`](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/DAOEtudiant.puml)
 
-@umlcdClassOperationsNum=1 @xdef @xdef
+Cette classe est constituée des méthodes suivantes :
 
-0=1
+-   `insert` qui à pour objectif de créer un nouvel étudiant dans la base de données. L’identifiant d’un tuple ne pouvant 
+être connu avant son insertion, cette méthode retourne une copie de l’objet métier passé en paramètre avec un identifiant 
+définitif. L’identité d’un objet dépendant uniquement de l’identifiant, un objet métier créé localement avec le constructeur 
+par défaut (objet temporaire sans identité propre du point de vue de `equals()` et `hashCode()`) ne devra participer à 
+aucune association avant d’être inséré dans la base avec cette méthode[17].
 
-@umlcdClassOperationsNum=1 @xdef @xdef
+-   `update` qui prend un objet métier en paramètre et essaie faire la mise à jour dans la base de données. La valeur 
+retournée par cette méthode indique si la mise à jour a pu avoir lieu.
 
-0=1
+-   `delete` qui prend un étudiant en paramètre et essaie de le supprimer de la base de données. La valeur retournée par 
+cette méthode indique si la suppression a pu avoir lieu.
 
-@umlcdClassOperationsNum=1 @xdef @xdef
+-   les `get` qui constituent, avec les `find`, les méthodes de récupération des données. Les paramètres passés à ces 
+méthodes permettent de récupérer uniquement les tuples satisfaisants certains critères. La différence entre ces deux 
+familles de méthodes est que les `get` doivent retourner exactement un seul résultat alors que les `find` peuvent en 
+retourner plusieurs.
 
-0=1
+-   les `compute` qui, comme leur nom l’indique, ont pour objectif d’effectuer des calculs sur les étudiants. La plupart 
+du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préférera, pour des raisons d’efficacité, le faire 
+directement dans le `Sgbd`. Ces méthodes sont donc soit des requêtes <span style="font-variant:small-caps;">Sql</span> 
+agrégatives soit des appels de procédures stockées.
 
-@umlcdClassOperationsNum=1 @xdef @xdef
+En utilisant `DAOEtudiant`, la récupération par l’application de l’étudiant d’identifiant 1 dans la base de données se 
+déroule comme suit :
 
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-La source de données étant une ressource unique, il n’existera qu’une seule instance de chacune des classes de DAO. Elles devront donc toutes être des singletons (*cf.* classes `ConnexionUnique` et `AssociationNotation` ). Chacune d’elles devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, mettre à jour et supprimer*[16]. Par convention, chacune des classes de DAO devra être nommée par “`DAO`” suivi du nom de la classe métier associée. La figure \[dao\_etudiant\] décrit la classe `DAOEtudiant` qui est le DAO associé à la classe d’objet métier `Etudiant`. Cette classe est constituée des méthodes suivantes :
-
--   `insert` qui à pour objectif de créer un nouvel étudiant dans la base de données. L’identifiant d’un tuple ne pouvant être connu avant son insertion, cette méthode retourne une copie de l’objet métier passé en paramètre avec un identifiant définitif. L’identité d’un objet dépendant uniquement de l’identifiant, un objet métier créé localement avec le constructeur par défaut (objet temporaire sans identité propre du point de vue de `equals()` et `hashCode()`) ne devra participer à aucune association avant d’être inséré dans la base avec cette méthode[17].
-
--   `update` qui prend un objet métier en paramètre et essaie faire la mise à jour dans la base de données. La valeur retournée par cette méthode indique si la mise à jour a pu avoir lieu.
-
--   `delete` qui prend un étudiant en paramètre et essaie de le supprimer de la base de données. La valeur retournée par cette méthode indique si la suppression a pu avoir lieu.
-
--   les `get` qui constituent, avec les `find`, les méthodes de récupération des données. Les paramètres passés à ces méthodes permettent de récupérer uniquement les tuples satisfaisants certains critères. La différence entre ces deux familles de méthodes est que les `get` doivent retourner exactement un seul résultat alors que les `find` peuvent en retourner plusieurs.
-
--   les `compute` qui, comme leur nom l’indique, ont pour objectif d’effectuer des calculs sur les étudiants. La plupart du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préférera, pour des raisons d’efficacité, le faire directement dans le `Sgbd`. Ces méthodes sont donc soit des requêtes <span style="font-variant:small-caps;">Sql</span> agrégatives soit des appels de procédures stockées.
-
-En utilisant `DAOEtudiant`, la récupération par l’application de l’étudiant d’identifiant 1 dans la base de données se déroule comme suit :
-
-1.  L’application demande un objet `Etudiant` correspondant au tuple d’identifiant 1 dans la base de données à l’unique instance de `DAOEtudiant`.
+1.  L’application demande un objet `Etudiant` correspondant au tuple d’identifiant 1 dans la base de données à 
+l’unique instance de `DAOEtudiant`.
 
 2.  L’objet `DAOEtudiant` récupère cette demande (méthode `getByID(1)` ) et il s’occupe d’exécuter la requête SQL avec JDBC.
 
@@ -377,12 +348,16 @@ En utilisant `DAOEtudiant`, la récupération par l’application de l’étudia
 
 6.  Enfin, l’objet `DAOEtudiant` retourne l’instance de l’objet `Etudiant`.
 
-Cette séquence d’opération illustre bien le rôle central de l’objet DAO dans l’accès aux données. Les opérations de mise à jour et de suppression se dérouleront à peu près de la même manière. Pour l’insertion d’un nouveau tuple, il faudra d’abord créer un objet sans identité (avec le constructeur par défaut) puis appeler la méthode `insert()` qui nous retournera notre objet définitif (avec un identifiant valide). Le code ci-dessous illustre l’utilisation typique du DAO pour l’ajout d’un nouvel étudiant et sa modification :
+Cette séquence d’opération illustre bien le rôle central de l’objet DAO dans l’accès aux données. Les opérations de mise 
+à jour et de suppression se dérouleront à peu près de la même manière. Pour l’insertion d’un nouveau tuple, il faudra 
+d’abord créer un objet sans identité (avec le constructeur par défaut) puis appeler la méthode `insert()` qui nous 
+retournera notre objet définitif (avec un identifiant valide). Le code ci-dessous illustre l’utilisation typique du DAO 
+pour l’ajout d’un nouvel étudiant et sa modification :
 
-```
+```java
 public class Main {
   public static void main(String[] args){
-    DAOEtudiant dao = DAOEtudiant.getInstance();
+    DAOEtudiant dao = new DAOEtudiant();
     Etudiant e = new Etudiant();//e est un Etudiant temporaire
     e.setNom("Dupont");
     e.setPrenom("Paul");
@@ -391,71 +366,36 @@ public class Main {
     e.setAnnee(1);//Modification des attributs de e 
     e.setGroupe(5);
     e = dao.insert(e);//e referencie maintenant un Etudiant definitif
-    ...
+    //...
     e.setAnnee(2);// Modification des attributs de e 
     e.setGroupe(3);
-    ...
+    //...
     boolean updateOk = dao.update(e);//Sauvegarde des modifications
-    ...
+    //...
   }
 }
 ```
+#### Question  :
+Implémenter la classe `DAOEtudiant`. Copier la classe `TestEntite` dans la classe `TestDAOEtudiant` et la modifier 
+pour qu'elle utilise un `DAO`.
 
-Tous les DAO de notre application ont un certain nombre de méthodes communes. Pour améliorer l’indépendance du code client vis à vis de la couche de persistance, nous ajoutons une interface `DAO` que tous les objets DAO devront implémenter. Les objets métiers dépendront ainsi d’une interface et non d’une implémentation particulière. La figure \[dao\_gestion\_peda\] donne le diagramme de classe de l’ensemble des DAO de l’application gestion pédagogique. Dans sa version complète, le pattern présenté utilise des `Factory` pour améliorer encore la modularité de la couche de persistance.
+Tous les DAO de notre application ont un certain nombre de méthodes communes. Pour améliorer l’indépendance du code client 
+vis à vis de la couche de persistance, nous ajoutons une interface `DAO` que tous les objets DAO devront implémenter. 
+Les objets métiers dépendront ainsi d’une interface et non d’une implémentation particulière. La figure ci-après donne 
+le diagramme de classe de l’ensemble des DAO de l’application gestion pédagogique. Dans sa version complète, le pattern 
+présenté utilise des `AbstractFactory` pour améliorer encore la modularité de la couche de persistance.
 
-\[text width=4cm\]<span>DAO&lt;T&gt;</span><span>6,0</span>
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-\[text width=2.6cm\]<span>DAONotation</span><span>0,-5</span>
-
-\[text width=2.6cm\]<span>DAONotationI</span><span>0,-8</span>
-
-\[text width=2.5cm\]<span>DAOEtudiant</span><span>3,-5</span>
-
-\[text width=2.5cm\]<span>DAOEtudiantI</span><span>3,-8</span>
-
-\[text width=2.3cm\]<span>DAOModule</span><span>6,-5</span>
-
-\[text width=2.3cm\]<span>DAOModuleI</span><span>6,-8</span>
-
-\[text width=2.3cm\]<span>DAOProf</span><span>8.7,-5</span>
-
-\[text width=2.3cm\]<span>DAOProfI</span><span>8.7,-8</span>
-
-\[text width=3.2cm\]<span>DAOEnseignement</span><span>12,-5</span>
-
-\[text width=3.3cm\]<span>DAOEnseignementI</span><span>12,-8</span>
-
-(DAO&lt;T&gt;) – (DAONotation); (DAO&lt;T&gt;) – (DAOEtudiant); (DAO&lt;T&gt;) – (DAOModule); (DAO&lt;T&gt;) – (DAOProf); (DAO&lt;T&gt;) – (DAOEnseignement);
-
-(DAONotation) – (DAONotationI); (DAOEtudiant) – (DAOEtudiantI); (DAOModule) – (DAOModuleI); (DAOProf) – (DAOProfI); (DAOEnseignement) – (DAOEnseignementI);
+![Diagramme de classe des `DAO`](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/DAO.puml)
 
 #### Question  :
 
-Implémenter les classes `DAOEtudiant`[18] dont le diagramme de classe incomplet vous est donné par la figure \[dao\_etudiant\].
+Implémenter toutes les classes `DAO` en prenant en compte intelligemment les associations existant entre les différentes 
+classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `testDAO`. Modifier le code de celle-ci pour que sa 
+boucle principale récupère tous les étudiants de deuxième années, les affiche, puis augmente toutes leurs notes pour le 
+module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
 
-#### Question  :
 
-Implémenter toutes les classes `DAO` en prenant en compte intéligement les associations existant entre les différentes classes métiers. Copier la classe `testJDBC` dans la nouvelle classe `testDAO`. Modifier le code de celle-ci pour que sa boucle principale récupère tous les étudiants de deuxième années, les affiche, puis augmente toutes leurs notes pour le module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
+### Notes et références
 
 [1] <http://www.hibernate.org/>
 
@@ -490,5 +430,3 @@ Implémenter toutes les classes `DAO` en prenant en compte intéligement les ass
 [16] Généralement désigné par l’acronyme anglais CRUD pour *Create, Retrieve, Update et Delete*
 
 [17] Ces objets sans identité jouent le rôle des objets de transfert de données (*Data Transfer Object*) du pattern DAO original.
-
-[18] Pour ceux qui n’auraient pas terminé la première partie du TP, un squelette des classes métiers est disponible à l’adresse suivante : <http://allegro.iut.univ-aix.fr/~nedjar/testJdbc.tar.bz2>

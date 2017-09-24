@@ -1,0 +1,33 @@
+@startuml
+scale 2
+
+interface DAO<Entite>{
++insert(T):T
++delete(T):boolean
++update(T):boolean
++getById(numT:int):T
++findAll():List<T>
+}
+
+interface DAONotation
+
+interface DAOEtudiant
+
+interface DAOModule
+
+interface DAOProf
+
+interface DAOEnseignement
+
+DAO <|-- DAONotation
+DAO <|-- DAOEtudiant
+DAO <|-- DAOModule
+DAO <|-- DAOProf
+DAO <|-- DAOEnseignement
+
+DAONotation <|.. DAONotationMySQL
+DAOEtudiant <|.. DAOEtudiantMySQL
+DAOModule <|.. DAOModuleMySQL
+DAOProf <|.. DAOProfMySQL
+DAOEnseignement <|.. DAOEnseignementMySQL
+@enduml
