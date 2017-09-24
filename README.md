@@ -96,7 +96,7 @@ concepts du schéma E/A a été transformé en son équivalent UML (Le losange e
 n-aires (*n* &gt; 2). `Notation` est une classe dite d’association. Elle permet de modéliser les attributs portés par une association.). À partir de cette traduction, des 
 modifications seront apportées à ce modèle pour le rendre implémentable.
 
-![Diagramme de classe « Gestion Pédagogique »](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/GestionPedagogique.puml)
+![Diagramme de classe « Gestion Pédagogique »](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/GestionPedagogique.puml)
 
 
 ### Modélisation des types d’entités
@@ -125,7 +125,7 @@ incomplet vous est donné dans la figure ci-après. Copier la classe `TestConnex
 Modifier le code de cette classe pour que sa boucle principale remplisse un [`ArrayList`][10] d’objets `Etudiant` et qu’elle 
 affiche le contenu de cette liste en utilisant la méthode `toString()`.
 
-![Diagramme de classe des entités](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/ClassesMetier.puml)
+![Diagramme de classe des entités](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/ClassesMetier.puml)
 
 
 ### Modélisation des types d’association hiérarchiques
@@ -154,7 +154,7 @@ quels sont les `Modules` dont il est responsable;
 -   pour chaque instance de la classe `Module` on connaitra son `Module` père mais pour un `Module` donné on ne peut pas 
 retrouver l’ensemble de ses fils.
 
-![Diagramme de classe avec navigabilité](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/Navigabilite.puml)
+![Diagramme de classe avec navigabilité](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/Navigabilite.puml)
 
 
 #### Question  :
@@ -184,7 +184,7 @@ simplifier la présentation, cette approche est appliquée dans un premier temps
 on ne considère pas les données portées par l’association (*cf.* figure ci dessus). L’implémentation complète (en 
 rajoutant la classe d’association) de cette association sera faite dans un second temps.
 
-![Association Notation sans la classe d'association](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationSimple.puml)
+![Association Notation sans la classe d'association](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationSimple.puml)
 
 Dans le cas de l’association « `est spécialiste` » où un `Prof` n’était lié qu’à un seul `Module`, il a suffi d’ajouter 
 dans `Prof` une référence vers une instance de `Module`. Ici, un `Etudiant` peut être lié à plusieurs `Module`. On ajoute 
@@ -198,14 +198,14 @@ dans `Module`. Cet ensemble de références vers des objets `Etudiant` rend poss
 Le diagramme de la figure ci-dessous décrit les changements apportés aux classes `Etudiant` et `Module` 
 pour implémenter l’association.
 
-![Classes `Module` et `Etudiant` utilisant deux Set](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationSimpleAvecMembre.puml)
+![Classes `Module` et `Etudiant` utilisant deux Set](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationSimpleAvecMembre.puml)
 
 
 L'implémentation proposée permet de savoir à quel `Module` un `Etudiant` est lié (et inversement) mais elle ne permet 
 pas d'ajouter des informations supplémentaires aux liens. Pour implémenter l'association comme dans la figure ci-dessous, 
 il faut prendre en compte la classe d'association `Notation`. 
 
-![Association `Notation` en considérerant les attributs portés](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationAvecAttributs.puml)
+![Association `Notation` en considérerant les attributs portés](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationAvecAttributs.puml)
 
 Les ensembles de références sont remplacés par des dictionnaires (des conteneurs associatifs) pour atteindre cet objectif. 
 Un dictionnaire peut être globalement perçu, d'un point de vue fonctionnel, comme une sorte de tableau indexable par 
@@ -218,7 +218,7 @@ et `Etudiant` pour prendre en compte ces changements sont décrite dans le diagr
 un `Etudiant` et un `Module` est ainsi représenté sous forme de collections (associatives) de pointeurs de part et 
 d'autre de l'association.
 
-![Classe `Module`, `Etudiant` avec prise en compte des notations](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationAvecMap.puml)
+![Classe `Module`, `Etudiant` avec prise en compte des notations](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/NotationAvecMap.puml)
 
 #### Objets d’association :
 
@@ -250,7 +250,7 @@ notation. Pour gérer correctement la contrainte d’unicité de l’association
 méthodes `equals()` et `hashCode()` héritées de [`Object`][13]. Deux liens sont considérés comme égaux s’ils référencent 
 le même étudiant et le même module (peu importe la note).
 
-![Diagramme de classe de `AssociationNotation`](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/AssociationNotation.puml)
+![Diagramme de classe de `AssociationNotation`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/AssociationNotation.puml)
 
 #### Question  :
 
@@ -311,7 +311,7 @@ Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi
 de la classe métier associée. La figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la 
 classe d’objet métier `Etudiant`. 
 
-![Diagramme de classe de `DAOEtudiant`](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAOEtudiant.puml)
+![Diagramme de classe de `DAOEtudiant`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAOEtudiant.puml)
 
 Cette classe est constituée des méthodes suivantes :
 
@@ -391,7 +391,7 @@ Les objets métiers dépendront ainsi d’une interface et non d’une implémen
 le diagramme de classe de l’ensemble des DAO de l’application gestion pédagogique. Dans sa version complète, le pattern 
 présenté utilise des `AbstractFactory` pour améliorer encore la modularité de la couche de persistance.
 
-![Diagramme de classe des `DAO`](`http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAO.puml)
+![Diagramme de classe des `DAO`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAO.puml)
 
 #### Question  :
 
