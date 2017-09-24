@@ -42,6 +42,19 @@ persistance Objets/Relationnelle comme [Hibernate][1] ou [EclipseLink][2].
 Pour illustrer ce propos, nous utiliserons la base de données « [Gestion Pédagogique][3] » que vous avez utilisée lors de
 vos TP de <span style="font-variant:small-caps;">Pl/Sql</span>.
 
+## Création de votre fork du TP
+
+La première chose que vous allez faire est de créer un fork d'un dépôt. Pour ce faire, rendez-vous sur le lien suivant : 
+
+[https://classroom.github.com/a/xdQCHt8e](https://classroom.github.com/a/xdQCHt8e) 
+
+Comme pour les TP d'IHM, GitHub va vous créer un dépôt contenant un fork du dépôt 'IUTInfoAix-m3106/TpJdbc' et 
+s'appellant 'IUTInfoAix-m3106/TpJdbc-votreUsername'. Vous apparaîtrez automatiquement comme contributeur de ce projet 
+pour y pousser votre travail.
+
+Une fois votre fork créé, il vous suffit de l'importer dans IntelliJ.
+
+
 Couche de persistance
 =====================
 
