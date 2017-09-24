@@ -1,0 +1,17 @@
+language: java
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
+jdk:
+ - oraclejdk8
+
+script:
+- sudo apt-get update && sudo apt-get install oracle-java8-installer
+- java -version
+- mvn cobertura:cobertura
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
