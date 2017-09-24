@@ -1,5 +1,5 @@
 @startuml
-scale 2
+scale 1.5
 class DAOEtudiant{
 - connection Connection
 +insert(Etudiant):Etudiant

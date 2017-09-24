@@ -1,7 +1,7 @@
 @startuml
-scale 2
+scale 1.5
 
-interface DAO<Entite>{
+interface DAO<Entity>{
 +insert(T):T
 +delete(T):boolean
 +update(T):boolean

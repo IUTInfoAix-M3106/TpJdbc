@@ -1,5 +1,5 @@
 @startuml
-scale 2
+scale 1.5
 class AssociationNotation{
 -liens : Set<Lien>
 -instance : AssociationNotation
