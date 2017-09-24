@@ -8,6 +8,10 @@ before_script:
 jdk:
  - oraclejdk8
 
+sudo: required
+services:
+  - docker
+
 script:
 - sudo apt-get update && sudo apt-get install oracle-java8-installer
 - java -version
