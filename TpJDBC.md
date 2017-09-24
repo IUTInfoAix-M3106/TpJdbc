@@ -77,7 +77,7 @@ seule connexion active à la fois et tous les objets devront se la partager.
 Le pattern singleton[5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
 
 
-![Diagramme de la classe ConnexionUnique](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/resources/assets/ConnexionUnique.puml)
+![Diagramme de la classe ConnexionUnique](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/ConnexionUnique.puml)
 
 #### Question  :
 
