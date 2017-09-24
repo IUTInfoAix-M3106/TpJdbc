@@ -302,14 +302,11 @@ moins autant de classes de DAO que d’entités du MCD (classe d’objet métier
 couche est donc une opération généralement fastidieuse. C’est l’une des raisons pour lesquelles les solutions de persistance 
 actuelles génèrent automatiquement une grande partie du code (Java et/ou <span style="font-variant:small-caps;">Sql</span>).
 
-
-La source de données étant une ressource unique, il n’existera qu’une seule instance de chacune des classes de DAO. Elles 
-devront donc toutes être des singletons (*cf.* classes `ConnexionUnique` et `AssociationNotation` ). Chacune d’elles 
-devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, 
+### Structure d'un DAO
+Chacun des DAO devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, 
 mettre à jour et supprimer* (Généralement désigné par l’acronyme anglais CRUD pour *Create, Retrieve, Update et Delete*). 
-Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom 
-de la classe métier associée. La figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la 
-classe d’objet métier `Etudiant`. 
+Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom de la classe métier associée. La 
+figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la classe d’objet métier `Etudiant`. 
 
 ![Diagramme de classe de `DAOEtudiant`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAOEtudiant.puml)
 
@@ -338,6 +335,8 @@ du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préfére
 directement dans le `Sgbd`. Ces méthodes sont donc soit des requêtes <span style="font-variant:small-caps;">Sql</span> 
 agrégatives soit des appels de procédures stockées.
 
+
+### Utilisation d'un DAO
 En utilisant `DAOEtudiant`, la récupération par l’application de l’étudiant d’identifiant 1 dans la base de données se 
 déroule comme suit :
 
@@ -384,6 +383,8 @@ public class Main {
 #### Question  :
 Implémenter la classe `DAOEtudiant`. Copier la classe `TestEntite` dans la classe `TestDAOEtudiant` et la modifier 
 pour qu'elle utilise un `DAO`.
+
+### Hiérarchie des DAO
 
 Tous les DAO de notre application ont un certain nombre de méthodes communes. Pour améliorer l’indépendance du code client 
 vis à vis de la couche de persistance, nous ajoutons une interface `DAO` que tous les objets DAO devront implémenter. 
