@@ -30,4 +30,7 @@ class Etudiant{
 -annee : int
 -groupe : int
 }
+
+Module -[hidden]> Prof
+Prof -[hidden]> Etudiant
 @enduml
