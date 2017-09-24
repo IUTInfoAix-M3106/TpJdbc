@@ -25,9 +25,9 @@ DAO <|-- DAOModule
 DAO <|-- DAOProf
 DAO <|-- DAOEnseignement
 
-DAONotation <|.. DAONotationMySQL
-DAOEtudiant <|.. DAOEtudiantMySQL
-DAOModule <|.. DAOModuleMySQL
-DAOProf <|.. DAOProfMySQL
-DAOEnseignement <|.. DAOEnseignementMySQL
+DAONotation <|.. DAONotationJDBC
+DAOEtudiant <|.. DAOEtudiantJDBC
+DAOModule <|.. DAOModuleJDBC
+DAOProf <|.. DAOProfJDBC
+DAOEnseignement <|.. DAOEnseignementJDBC
 @enduml
