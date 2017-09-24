@@ -1,6 +1,6 @@
 @startuml
 
-scale 750 width
+scale 3
 
 class Module{
 -code : String
