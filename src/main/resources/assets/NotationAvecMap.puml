@@ -1,0 +1,28 @@
+@startuml
+scale 2
+
+class Etudiant{
+-numEt : int
+-nomEt : String
+-prenomEt : String
+-cpEt : String
+-villeEt : String
+-annee : int
+-groupe : int
+-notations : Map<Module, Notation>
+}
+
+class Module{
+-code : String
+-libelle : String
+-hCoursPrev : int
+-hCoursRea : int
+-hTpPrev : int
+-hTpRea : int
+-discipline : String
+-coefCc : int
+-pere : Module
+-responsable : Prof
+-etudiants : Map<Etudiant, Notation>
+}
+@enduml

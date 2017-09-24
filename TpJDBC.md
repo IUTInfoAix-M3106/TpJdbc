@@ -170,115 +170,89 @@ spécialiste.
 
 ### Modélisation des types d’association non hiérarchiques
 
-Contrairement aux types d’association hiérarchiques qui peuvent être implémentés simplement par des références (pointeurs en *C* + +), les types d’association non hiérarchiques nécessitent une structure supplémentaire . Nous allons présenter trois manières d’implémenter ces types d’association : les collections de pointeurs de chaque coté de l’association, les objets d’association et la promotion d’une association en classe. Chacune de ces méthodes d’implémentation a des avantages et des inconvénients qu’il faudra prendre en compte avant de faire un choix.
+Contrairement aux types d’association hiérarchiques qui peuvent être implémentés simplement par des références (pointeurs 
+en *C* + +), les types d’association non hiérarchiques nécessitent une structure supplémentaire . Nous allons présenter 
+trois manières d’implémenter ces types d’association : les collections de pointeurs de chaque coté de l’association, les 
+objets d’association et la promotion d’une association en classe. Chacune de ces méthodes d’implémentation a des avantages 
+et des inconvénients qu’il faudra prendre en compte avant de faire un choix.
 
 #### Collections de pointeurs aux extrémités de l’association :
 
-La première méthode est en quelque sorte une extension de la technique d’implémentation du paragraphe précédent. Pour simplifier la présentation, cette approche est appliquée dans un premier temps sur l’association `Notation`, dans laquelle on ne considère pas les données portées par l’association (*cf.* figure \[uml\_notation1\]). L’implémentation complète (en rajoutant la classe d’association) de cette association sera faite dans un second temps.
+La première méthode est en quelque sorte une extension de la technique d’implémentation du paragraphe précédent. Pour 
+simplifier la présentation, cette approche est appliquée dans un premier temps sur l’association `Notation`, dans laquelle 
+on ne considère pas les données portées par l’association (*cf.* figure ci dessus). L’implémentation complète (en 
+rajoutant la classe d’association) de cette association sera faite dans un second temps.
 
-\[text width=2cm\]<span>Module</span><span>0,0</span>
+![Association Notation sans la classe d'association](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/NotationSimple.puml)
 
-\[text width=2cm\]<span>Etudiant</span><span>9,0</span>
+Dans le cas de l’association « `est spécialiste` » où un `Prof` n’était lié qu’à un seul `Module`, il a suffi d’ajouter 
+dans `Prof` une référence vers une instance de `Module`. Ici, un `Etudiant` peut être lié à plusieurs `Module`. On ajoute 
+donc non pas une seule référence, mais un ensemble (ou collection) de références, nommé `notations`, vers des objets 
+`Module`. Cette collection doit être d’un type implémentant l’interface `Set`[11] tel que `HashSet` ou `TreeSet`. 
+Cette contrainte garantit l’unicité des objets contenus dans la collection. Ainsi, un même `Etudiant` ne peut pas 
+être lié plusieurs fois à un même `Module`, ce qui indispensable pour modéliser correctement une association.
 
-(Module.east) to node\[very near end, below\]<span>\*</span> node \[above\]<span>Notation</span> node\[very near start, below\]<span>\*</span> (Etudiant.west);
+Aucun sens de navigation n’étant privilégié, il faut rajouter de manière symétrique une collection appelée `etudiants` 
+dans `Module`. Cet ensemble de références vers des objets `Etudiant` rend possible la navigation dans le sens inverse. 
+Le diagramme de la figure ci-dessous décrit les changements apportés aux classes `Etudiant` et `Module` 
+pour implémenter l’association.
 
-Dans le cas de l’association « `est spécialiste` » où un `Prof` n’était lié qu’à un seul `Module`, il a suffi d’ajouter dans `Prof` une référence vers une instance de `Module`. Ici, un `Etudiant` peut être lié à plusieurs `Module`. On ajoute donc non pas une seule référence, mais un ensemble (ou collection) de références, nommé `notations`, vers des objets `Module`. Cette collection doit être d’un type implémentant l’interface `Set`[11] tel que `HashSet` ou `TreeSet`. Cette contrainte garantit l’unicité des objets contenus dans la collection. Ainsi, un même `Etudiant` ne peut pas être lié plusieurs fois à un même `Module`, ce qui indispensable pour modéliser correctement une association.
+![Classes `Module` et `Etudiant` utilisant deux Set](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/NotationSimpleAvecMembre.puml)
 
-Aucun sens de navigation n’étant privilégié, il faut rajouter de manière symétrique une collection appelée `etudiants` dans `Module`. Cet ensemble de références vers des objets `Etudiant` rend possible la navigation dans le sens inverse. Le diagramme de la figure \[classe\_notation\_set\] décrit les changements apportés aux classes `Etudiant` et `Module` pour implémenter l’association.
 
-\[\]
+L'implémentation proposée permet de savoir à quel `Module` un `Etudiant` est lié (et inversement) mais elle ne permet 
+pas d'ajouter des informations supplémentaires aux liens. Pour implémenter l'association comme dans la figure ci-dessous, 
+il faut prendre en compte la classe d'association `Notation`. 
 
-\[text width=5.5cm\]<span>Module</span><span>0,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
+![Association `Notation` en considérerant les attributs portés](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/NotationAvecAttributs.puml)
 
-\[text width=5.5cm\]<span>Etudiant</span><span>10,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
+Les ensembles de références sont remplacés par des dictionnaires (des conteneurs associatifs) pour atteindre cet objectif. 
+Un dictionnaire peut être globalement perçu, d'un point de vue fonctionnel, comme une sorte de tableau indexable par 
+n'importe quel type d'objet (plus seulement par des entiers). Malgré leur simplicité d'utilisation, ils ont un coût 
+d'accès plus élevé qu'un tableau classique. En Java, les conteneurs associatifs 
+sont des classes implémentant l'interface `Map` (tel que `HashMap`). Ces classes permettent d'associer un objet clef 
+(l'objet servant d'index) à un objet valeur (n'importe quel autre objet). D'après le diagramme de classe, cet 
+objet valeur sera une référence vers un objet de la classe `Notation`.  Les modifications à apporter aux classes `Module` 
+et `Etudiant` pour prendre en compte ces changements sont décrite dans le diagramme qui suit. Le lien `Notation` entre 
+un `Etudiant` et un `Module` est ainsi représenté sous forme de collections (associatives) de pointeurs de part et 
+d'autre de l'association.
 
-\[\]
-
-\[text width=2cm\]<span>Module</span><span>0,0</span>
-
-\[text width=2cm\]<span>Etudiant</span><span>8,0</span>
-
-\[text width=3cm\]<span>Notation</span><span>4,-2.5</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
-
-(Module.east) – node\[\](a) (Etudiant.west) node\[very near start, above\]<span>\*</span> node\[very near end, above\]<span>\*</span>; (a) circle (2pt)–(Notation);
-
-L’implémentation proposée permet de savoir à quel `Module` un `Etudiant` est lié (et inversement) mais elle ne permet pas d’ajouter des informations supplémentaires aux liens. Pour implémenter l’association comme dans la figure \[uml\_notation2\], il faut prendre en compte la classe d’association `Notation`. Les ensembles de références sont remplacés par des dictionnaires (des conteneurs associatifs) pour atteindre cet objectif. Un dictionnaire peut être globalement perçu, d’un point de vue fonctionnel, comme une sorte de tableau indexable par n’importe quel type d’objet (plus seulement par des entiers). Malgré leur simplicité d’utilisation, ils ont un coût d’accès plus élevé qu’un tableau classique . En Java, les conteneurs associatifs sont des classes implémentant l’interface `Map`[12] (tel que `HashMap`). Ces classes permettent d’associer un objet clef (l’objet servant d’index) à un objet valeur (n’importe quel autre objet). D’après le diagramme de classe de la figure \[uml\_notation2\], cet objet valeur sera une référence vers un objet de la classe `Notation`. Les modifications à apporter aux classes `Module` et `Etudiant` pour prendre en compte ces changements sont décrites dans la figure \[classe\_notation\_map\]. Le lien `Notation` entre un `Etudiant` et un `Module` est ainsi représenté sous forme de collections (associatives) de pointeurs de part et d’autre de l’association.
-
-\[\]
-
-\[text width=7cm\]<span>Module</span><span>0,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
-
-\[text width=7cm\]<span>Etudiant</span><span>8.5,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
+![Classe `Module`, `Etudiant` avec prise en compte des notations](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/NotationAvecMap.puml)
 
 #### Objets d’association :
 
-L’approche précédente est relativement simple à mettre en œuvre du point de vue des modifications à apporter aux différentes classes. La principale difficulté provient de l’interdépendance entre objets qu’elle introduit. En effet, chacun des objets participant à une association a la responsabilité de construire et de maintenir à jour sa propre liste de liens. Si l’on souhaite supprimer un objet, il faut avant cela supprimer cet objet dans chacune des listes des objets avec lequel il est lié. La responsabilité de la cohérence (réciprocité) d’un lien est partagée entre plusieurs objets de classes différentes, il y a donc éparpillement du code de gestion l’association ce qui implique un risque plus important d’erreur.
+L’approche précédente est relativement simple à mettre en œuvre du point de vue des modifications à apporter aux 
+différentes classes. La principale difficulté provient de l’interdépendance entre objets qu’elle introduit. En effet, 
+chacun des objets participant à une association a la responsabilité de construire et de maintenir à jour sa propre liste 
+de liens. Si l’on souhaite supprimer un objet, il faut avant cela supprimer cet objet dans chacune des listes des objets 
+avec lequel il est lié. La responsabilité de la cohérence (réciprocité) d’un lien est partagée entre plusieurs objets de 
+classes différentes, il y a donc éparpillement du code de gestion l’association ce qui implique un risque plus important 
+d’erreur.
 
-Dans notre cas (application avec objets persistants en BD) une telle approche n’est pas envisageable, car lorsque l’on doit rendre persistant un objet dans une base de données, cela implique de vérifier si les objets avec lesquels il est lié sont déjà stockés dans la base de données. Or, cette tache n’est pas du tout évidente d’un point de vue algorithmique et a un coût important s’il existe un grand nombre de liens.
+Dans notre cas (application avec objets persistants en BD) une telle approche n’est pas envisageable, car lorsque l’on 
+doit rendre persistant un objet dans une base de données, cela implique de vérifier si les objets avec lesquels il est 
+lié sont déjà stockés dans la base de données. Or, cette tache n’est pas du tout évidente d’un point de vue algorithmique 
+et a un coût important s’il existe un grand nombre de liens.
 
-La seconde solution  consiste à créer un unique objet qui aura la responsabilité de conserver et gérer tous les liens d’une association. Cet objet ayant une vision globale des liens existants, il peut facilement supprimer tous les liens entretenus par un seul et même objet. De plus, un objet n’a plus à connaitre tous les objets qui lui sont liés mais uniquement l’objet association qui pourra retrouver au besoin tous ces liens. En quelque sorte, cette approche est une solution globale qui décharge les différents objets de la responsabilité de gérer chacun des liens localement. Pour rendre persistante une association, il suffit de stocker tous les objets connus par l’association avant de stocker l’objet d’association lui même.
+La seconde solution  consiste à créer un unique objet qui aura la responsabilité de conserver et gérer tous les liens 
+d’une association. Cet objet ayant une vision globale des liens existants, il peut facilement supprimer tous les liens 
+entretenus par un seul et même objet. De plus, un objet n’a plus à connaitre tous les objets qui lui sont liés mais 
+uniquement l’objet association qui pourra retrouver au besoin tous ces liens. En quelque sorte, cette approche est une 
+solution globale qui décharge les différents objets de la responsabilité de gérer chacun des liens localement. Pour 
+rendre persistante une association, il suffit de stocker tous les objets connus par l’association avant de stocker l’objet 
+d’association lui même.
 
-L’implémentation d’un objet d’association se fait en utilisant un ensemble (`Set`) d’objet lien. Chaque objet lien est un *n*-uplet de références vers les différentes classes participant à l’association. La figure \[classe\_association\_notation\] donne le diagramme de classe de l’objet d’association `AssociationNotation`. Un `Lien` est dans notre cas un triplet d’étudiant, module et notation. Pour gérer correctement la contrainte d’unicité de l’association, la classe `Lien` doit surcharger les méthodes `equals()` et `hashCode()` héritées de `Object`[13]. Deux liens sont considérés comme égaux s’ils référencent le même étudiant et le même module (peu importe la note).
+L’implémentation d’un objet d’association se fait en utilisant un ensemble (`Set`) d’objet lien. Chaque objet lien est 
+un *n*-uplet de références vers les différentes classes participant à l’association. La figure ci-après donne le diagramme 
+de classe de l’objet d’association `AssociationNotation`. Un `Lien` est dans notre cas un triplet d’étudiant, module et 
+notation. Pour gérer correctement la contrainte d’unicité de l’association, la classe `Lien` doit surcharger les 
+méthodes `equals()` et `hashCode()` héritées de `Object`[13]. Deux liens sont considérés comme égaux s’ils référencent 
+le même étudiant et le même module (peu importe la note).
 
-\[text width=8cm\]<span>AssociationNotation</span><span>0,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
 
-0=1
+![Diagramme de classe de `AssociationNotation`](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/AssociationNotation.puml)
 
-@umlcdClassOperationsNum=1 @xdef @xdef
 
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-\[text width=4.4cm\]<span>Lien</span><span>7,0</span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span> <span>@umlcdClassAttributesNum=0 @xdef @xdef </span>
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
-
-0=1
-
-@umlcdClassOperationsNum=1 @xdef @xdef
 
 #### Question  :
 

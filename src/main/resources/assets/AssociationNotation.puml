@@ -1,0 +1,27 @@
+@startuml
+scale 2
+class AssociationNotation{
+-liens : Set<Lien>
+-instance : AssociationNotation
++creerLien(Module, Etudiant, Notation)
++suprimerLien(Module, Etudiant)
++suprimerLien(Lien)
++getLien(Module, Etudiant):Lien
++getLiens(Etudiant):Set<Lien>
++getLiens(Module):Set<Lien>
++getModules(Etudiant):Set<Module>
++getEtudiants(Module):Set<Etudiant>
++getInstance() : AssociationNotation
+}
+
+class Lien{
+-module : Module
+-etudiant : Etudiant
+-note : Notation
++Lien(Module, Etudiant)
++getModule():Module
++getEtudiant():Etudiant
++getNotation():Notation
++setNotation(note : Notation)
+}
+@enduml

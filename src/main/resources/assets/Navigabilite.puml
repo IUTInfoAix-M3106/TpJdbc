@@ -1,5 +1,5 @@
 @startuml
-scale 3
+scale 2
 class Module
 
 class Prof
