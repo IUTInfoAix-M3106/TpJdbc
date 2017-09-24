@@ -10,8 +10,8 @@
     * Consulter et/ou créér des [issues](https://github.com/IUTInfoAix-M3106/TutoJdbc/issues).
     * [Email](mailto:sebastien.nedjar@univ-amu.fr) pour une question d'ordre privée, ou pour convenir d'un rendez-vous physique.
 
-Introduction
-============
+TP découverte de JDBC et Création du couche de persistance [![Build Status](https://travis-ci.org/IUTInfoAix-M3106/TpJdbc.svg)](https://travis-ci.org/IUTInfoAix-M3106/TpJdbc)
+==========================================================
 Tp d'initiation à JDBC donné aux étudiants de deuxième année du DUT Informatique d'Aix-Marseille. En plus d'apprendre à 
 utiliser l'API JDBC, l'objectif final de ce TP est de sensibiliser les étudiants à la difficulté de de construction et 
 de maintenance manuelle d'une couche de persistance.
