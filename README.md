@@ -172,7 +172,7 @@ spécialiste.
 ### Modélisation des types d’association non hiérarchiques
 
 Contrairement aux types d’association hiérarchiques qui peuvent être implémentés simplement par des références (pointeurs 
-en *C* + +), les types d’association non hiérarchiques nécessitent une structure supplémentaire . Nous allons présenter 
+en *C++*), les types d’association non hiérarchiques nécessitent une structure supplémentaire . Nous allons présenter 
 trois manières d’implémenter ces types d’association : les collections de pointeurs de chaque coté de l’association, les 
 objets d’association et la promotion d’une association en classe. Chacune de ces méthodes d’implémentation a des avantages 
 et des inconvénients qu’il faudra prendre en compte avant de faire un choix.
