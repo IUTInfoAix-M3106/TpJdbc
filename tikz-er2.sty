@@ -1,6 +1,6 @@
 % The tikz-er2 package.
 % Ver. 1.0
-% (c) Pável Caldo
+% (c) Pavel Caldo
 % January 2009
 
 \NeedsTeXFormat{LaTeX2e}
@@ -91,11 +91,3 @@ Tikz library]
 
 % for text un key attributes
 \newcommand{\key}[1]{\underline{#1}}
-
-% for text in discriminator attributes
-\def\discriminator{\bgroup 
-  \ifdim\ULdepth=\maxdimen  % Set depth based on font, if not set already
-   \settodepth\ULdepth{(j}\advance\ULdepth.4pt\fi
-  \markoverwith{\kern.15em
-  \vtop{\kern\ULdepth \hrule width .3em}%
-  \kern.15em}\ULon}
