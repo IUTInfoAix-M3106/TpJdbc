@@ -397,7 +397,7 @@ présenté utilise des `AbstractFactory` pour améliorer encore la modularité d
 #### Question 7 :
 
 Implémenter toutes les classes `DAO` en prenant en compte intelligemment les associations existant entre les différentes 
-classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `testDAO`. Modifier le code de celle-ci pour que sa 
+classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `TestDAO`. Modifier le code de celle-ci pour que sa 
 boucle principale récupère tous les étudiants de deuxième années, les affiche, puis augmente toutes leurs notes pour le 
 module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
 
@@ -415,14 +415,14 @@ module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
 
 [8]:<http://fr.wikipedia.org/wiki/S%C3%A9rialisation>
 
-[9]:<http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
+[9]:<http://download.oracle.com/javase/8/docs/api/java/lang/Object.html>
 
-[10]:<http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html>
+[10]:<http://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html>
 
 [11]:<http://java.sun.com/developer/onlineTraining/collections/Collection.html#SetInterface>
 
 [12]:<http://java.sun.com/developer/onlineTraining/collections/Collection.html#MapInterface>
 
-[13]:<http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
+[13]:<http://download.oracle.com/javase/8/docs/api/java/lang/Object.html>
 
 [14]:<http://java.sun.com/blueprints/corej2eepatterns/Patterns/DataAccessObject.html>
