@@ -37,9 +37,9 @@ grande maintenabilité et une plus grande dépendance face à une technologie de
 cette difficulté, nous allons construire une couche dédiée à l’accès aux données (souvent appelée couche DAO). La
 construction d’une telle couche a pour objectif de séparer totalement les accès aux données du code de notre
 application. Les techniques présentées constituent une première introduction par la pratique aux solutions de
-persistance Objets/Relationnelle comme Hibernate[1] ou EclipseLink[2].
+persistance Objets/Relationnelle comme [Hibernate][1] ou [EclipseLink][2].
 
-Pour illustrer ce propos, nous utiliserons la base de données « Gestion Pédagogique[3] » que vous avez utilisée lors de
+Pour illustrer ce propos, nous utiliserons la base de données « [Gestion Pédagogique][3] » que vous avez utilisée lors de
 vos TP de <span style="font-variant:small-caps;">Pl/Sql</span>.
 
 Couche de persistance
@@ -74,7 +74,7 @@ transactions demande un travail important que nous n’avons pas les moyens four
 mono-utilisateur nous utiliserons la méthode dite *« session-per-application »*, c’est à dire qu’il n’y aura qu’une
 seule connexion active à la fois et tous les objets devront se la partager. 
 
-Le pattern singleton[5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
+Le [pattern singleton][5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
 
 #### Question  :
 
@@ -89,10 +89,11 @@ Création des classes d’objets métiers
 La création d’un mapping entre le « monde objet » et le « monde relationnel » nécessite au préalable la création de 
 modèles de données semblables mais adaptés aux spécificités de chacun de ses mondes. L’objectif est donc de transformer 
 le modèle relationnel de la base « Gestion Pédagogique » (schéma Entité/Association) en un modèle objet satisfaisant 
-(diagramme de classes UML[6]).
+([diagramme de classes UML][6]).
 
 La figure ci-dessous est une traduction directe du schéma Entité/Association en un diagramme de classe UML. Chacun des 
-concepts du schéma E/A a été transformé en son équivalent UML[7]. À partir de cette traduction, des 
+concepts du schéma E/A a été transformé en son équivalent UML (Le losange est le symbole matérialisant les associations 
+n-aires (*n* &gt; 2). `Notation` est une classe dite d’association. Elle permet de modéliser les attributs portés par une association.). À partir de cette traduction, des 
 modifications seront apportées à ce modèle pour le rendre implémentable.
 
 ![Diagramme de classe « Gestion Pédagogique »](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/GestionPedagogique.puml)
@@ -104,7 +105,7 @@ Pour établir une correspondance entre une entité de notre BD et un objet de no
 écrire les classes associées à chacun des types d’entités. Pour des raisons qui apparaitront plus tard, chaque classe 
 métier devra suivre les conventions suivantes :
 
--   La classe doit être « sérialisable »[8] (*i.e.* implémenter l’interface `Serializable`) pour pouvoir sauvegarder et 
+-   La classe doit être [« sérialisable »][8] (*i.e.* implémenter l’interface `Serializable`) pour pouvoir sauvegarder et 
 restaurer l’état des instances de cette classe ;
 
 -   La classe doit posséder un constructeur sans argument (constructeur par défaut);
@@ -116,12 +117,12 @@ majuscule (utiliser les fonctionnalités de génération de l'IDE).
 -   La classe doit surcharger la méthode `toString()` pour pouvoir afficher l’état des instances de cette classe (voir 
 les capacités de génération de l'IDE).
 
--   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de `Object`[9]
+-   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de [`Object`][9]
 #### Question  :
 
 Implémenter (en respectant les conventions ci-dessus) les classes `Etudiant`, `Module` et `Prof` dont le diagramme UML 
 incomplet vous est donné dans la figure ci-après. Copier la classe `TestConnexion` dans la nouvelle classe `TestEntite`. 
-Modifier le code de cette classe pour que sa boucle principale remplisse un `ArrayList`[10] d’objets `Etudiant` et qu’elle 
+Modifier le code de cette classe pour que sa boucle principale remplisse un [`ArrayList`][10] d’objets `Etudiant` et qu’elle 
 affiche le contenu de cette liste en utilisant la méthode `toString()`.
 
 ![Diagramme de classe des entités](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/ClassesMetier.puml)
@@ -188,7 +189,7 @@ rajoutant la classe d’association) de cette association sera faite dans un sec
 Dans le cas de l’association « `est spécialiste` » où un `Prof` n’était lié qu’à un seul `Module`, il a suffi d’ajouter 
 dans `Prof` une référence vers une instance de `Module`. Ici, un `Etudiant` peut être lié à plusieurs `Module`. On ajoute 
 donc non pas une seule référence, mais un ensemble (ou collection) de références, nommé `notations`, vers des objets 
-`Module`. Cette collection doit être d’un type implémentant l’interface `Set`[11] tel que `HashSet` ou `TreeSet`. 
+`Module`. Cette collection doit être d’un type implémentant l’interface [`Set`][11] tel que `HashSet` ou `TreeSet`. 
 Cette contrainte garantit l’unicité des objets contenus dans la collection. Ainsi, un même `Etudiant` ne peut pas 
 être lié plusieurs fois à un même `Module`, ce qui indispensable pour modéliser correctement une association.
 
@@ -210,7 +211,7 @@ Les ensembles de références sont remplacés par des dictionnaires (des contene
 Un dictionnaire peut être globalement perçu, d'un point de vue fonctionnel, comme une sorte de tableau indexable par 
 n'importe quel type d'objet (plus seulement par des entiers). Malgré leur simplicité d'utilisation, ils ont un coût 
 d'accès plus élevé qu'un tableau classique. En Java, les conteneurs associatifs 
-sont des classes implémentant l'interface `Map` (tel que `HashMap`). Ces classes permettent d'associer un objet clef 
+sont des classes implémentant l'interface [`Map`][12] (tel que `HashMap`). Ces classes permettent d'associer un objet clef 
 (l'objet servant d'index) à un objet valeur (n'importe quel autre objet). D'après le diagramme de classe, cet 
 objet valeur sera une référence vers un objet de la classe `Notation`.  Les modifications à apporter aux classes `Module` 
 et `Etudiant` pour prendre en compte ces changements sont décrite dans le diagramme qui suit. Le lien `Notation` entre 
@@ -246,7 +247,7 @@ L’implémentation d’un objet d’association se fait en utilisant un ensembl
 un *n*-uplet de références vers les différentes classes participant à l’association. La figure ci-après donne le diagramme 
 de classe de l’objet d’association `AssociationNotation`. Un `Lien` est dans notre cas un triplet d’étudiant, module et 
 notation. Pour gérer correctement la contrainte d’unicité de l’association, la classe `Lien` doit surcharger les 
-méthodes `equals()` et `hashCode()` héritées de `Object`[13]. Deux liens sont considérés comme égaux s’ils référencent 
+méthodes `equals()` et `hashCode()` héritées de [`Object`][13]. Deux liens sont considérés comme égaux s’ils référencent 
 le même étudiant et le même module (peu importe la note).
 
 ![Diagramme de classe de `AssociationNotation`](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/AssociationNotation.puml)
@@ -294,15 +295,19 @@ ainsi un risque d’erreur plus important.
 rend le changement de SGBD (par exemple le remplacement de Oracle par Postgres) très délicat voir impossible.
 
 Pour éviter ces problèmes, nous allons construire une couche dédiée à l’accès aux données qui utilisera le pattern 
-DAO[14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de 
+[DAO][14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de 
 l’application utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle sera donc une sorte 
 d’abstraction du modèle de données indépendante de la solution de stockage des données. La couche DAO contiendra au 
-moins autant de classes de DAO que d’entités du MCD (classe d’objet métier) [15].
+moins autant de classes de DAO que d’entités du MCD (classe d’objet métier). L’écriture et la maintenance d’une telle 
+couche est donc une opération généralement fastidieuse. C’est l’une des raisons pour lesquelles les solutions de persistance 
+actuelles génèrent automatiquement une grande partie du code (Java et/ou <span style="font-variant:small-caps;">Sql</span>).
+
 
 La source de données étant une ressource unique, il n’existera qu’une seule instance de chacune des classes de DAO. Elles 
 devront donc toutes être des singletons (*cf.* classes `ConnexionUnique` et `AssociationNotation` ). Chacune d’elles 
 devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, 
-mettre à jour et supprimer*[16]. Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom 
+mettre à jour et supprimer* (Généralement désigné par l’acronyme anglais CRUD pour *Create, Retrieve, Update et Delete*). 
+Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom 
 de la classe métier associée. La figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la 
 classe d’objet métier `Etudiant`. 
 
@@ -314,7 +319,8 @@ Cette classe est constituée des méthodes suivantes :
 être connu avant son insertion, cette méthode retourne une copie de l’objet métier passé en paramètre avec un identifiant 
 définitif. L’identité d’un objet dépendant uniquement de l’identifiant, un objet métier créé localement avec le constructeur 
 par défaut (objet temporaire sans identité propre du point de vue de `equals()` et `hashCode()`) ne devra participer à 
-aucune association avant d’être inséré dans la base avec cette méthode[17].
+aucune association avant d’être inséré dans la base avec cette méthode (Ces objets sans identité jouent le rôle des objets 
+de transfert de données (*Data Transfer Object*) du pattern DAO original).
 
 -   `update` qui prend un objet métier en paramètre et essaie faire la mise à jour dans la base de données. La valeur 
 retournée par cette méthode indique si la mise à jour a pu avoir lieu.
@@ -394,39 +400,28 @@ classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `testDAO`
 boucle principale récupère tous les étudiants de deuxième années, les affiche, puis augmente toutes leurs notes pour le 
 module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
 
+[1]:<http://www.hibernate.org/>
 
-### Notes et références
+[2]:<http://www.eclipse.org/eclipselink/>
 
-[1] <http://www.hibernate.org/>
+[3]:<https://github.com/IUTInfoAix-M3106/TutoJdbc>
 
-[2] <http://www.eclipse.org/eclipselink/>
+[4]:<http://fr.wikipedia.org/wiki/Transaction_informatique>
 
-[3] Script de régénération disponible dans le dépôt du tutoriel JDBC : <https://github.com/IUTInfoAix-M3106/TutoJdbc>
+[5]:<http://fr.wikipedia.org/wiki/Singleton_%28patron_de_conception%29>
 
-[4] <http://fr.wikipedia.org/wiki/Transaction_informatique>
+[6]:<http://uml.free.fr/>
 
-[5] <http://fr.wikipedia.org/wiki/Singleton_%28patron_de_conception%29>
+[8]:<http://fr.wikipedia.org/wiki/S%C3%A9rialisation>
 
-[6] <http://uml.free.fr/>
+[9]:<http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
 
-[7] Le losange est le symbole matérialisant les associations n-aires (*n* &gt; 2). `Notation` est une classe dite d’association. Elle permet de modéliser les attributs portés par une association.
+[10]:<http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html>
 
-[8] <http://fr.wikipedia.org/wiki/S%C3%A9rialisation>
+[11]:<http://java.sun.com/developer/onlineTraining/collections/Collection.html#SetInterface>
 
-[9] <http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
+[12]:<http://java.sun.com/developer/onlineTraining/collections/Collection.html#MapInterface>
 
-[10] <http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html>
+[13]:<http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
 
-[11] Les spécificités de l’interface `Set` sont présentées sur la page suivante : <http://java.sun.com/developer/onlineTraining/collections/Collection.html#SetInterface>
-
-[12] Les spécificités de l’interface `Map` sont présentées à la page <http://java.sun.com/developer/onlineTraining/collections/Collection.html#MapInterface>
-
-[13] <http://download.oracle.com/javase/6/docs/api/java/lang/Object.html>
-
-[14] <http://java.sun.com/blueprints/corej2eepatterns/Patterns/DataAccessObject.html>
-
-[15] L’écriture et la maintenance d’une telle couche est donc une opération généralement fastidieuse. C’est l’une des raisons pour lesquelles les solutions de persistance actuelles génèrent automatiquement une grande partie du code (Java et/ou <span style="font-variant:small-caps;">Sql</span>).
-
-[16] Généralement désigné par l’acronyme anglais CRUD pour *Create, Retrieve, Update et Delete*
-
-[17] Ces objets sans identité jouent le rôle des objets de transfert de données (*Data Transfer Object*) du pattern DAO original.
+[14]:<http://java.sun.com/blueprints/corej2eepatterns/Patterns/DataAccessObject.html>
