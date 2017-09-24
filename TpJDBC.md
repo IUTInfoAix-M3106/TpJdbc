@@ -129,35 +129,44 @@ affiche le contenu de cette liste en utilisant la méthode `toString()`.
 
 ### Modélisation des types d’association hiérarchiques
 
-Dans la figure \[uml\_gestion\_peda\] tous les types d’association binaires du MCD ont été représentés par leurs équivalents en UML . Ces associations UML sont symbolisées par un trait liant deux classes. Les multiplicités (les nombres situés aux extrémités de l’association) correspondent aux cardinalités du MCD mis à part qu’elles sont placées à l’inverse. Par exemple, pour indiquer qu’une classe `A` peut participer 0 ou 1 fois à une association avec la classe `B`, on placerait la multiplicité `0..1` du coté de `B`. UML permet d’écrire certaines multiplicités de manière simplifiée : `0..*` devient `*` et `1..1` devient `1`.
+Précédement tous les types d’association binaires du MCD ont été représentés par leurs équivalents en UML. Ces 
+associations UML sont symbolisées par un trait liant deux classes. Les multiplicités (les nombres situés aux extrémités 
+de l’association) correspondent aux cardinalités du MCD mis à part qu’elles sont placées à l’inverse. Par exemple, pour 
+indiquer qu’une classe `A` peut participer 0 ou 1 fois à une association avec la classe `B`, on placerait la 
+multiplicité `0..1` du coté de `B`. UML permet d’écrire certaines multiplicités de manière simplifiée : `0..*` devient 
+`*` et `1..1` devient `1`.
 
-\[\]
+Par défaut les associations sont bidirectionnelles, cela signifie qu’une instance à l’une des extrémités peut savoir avec 
+quelles autres instances elle est liée par cette association. Dans la pratique, ce double lien peut être coûteux à maintenir, 
+c’est pourquoi UML permet de privilégier un seul sens en interdisant l’accès dans l’autre. C’est ce que l’on appelle la 
+restriction de la navigabilité d’une association. Elle est symbolisée par une flèche indiquant le sens de navigation permis.
 
-\[text width=2cm\]<span>Module</span><span>0,0</span>
+La figure ci-aprés montre le sens de navigation des trois types d’association hiérarchiques de la base « Gestion Pédagogique ». 
+Les sens de navigation choisis imposent que :
 
-\[text width=2cm\]<span>Prof</span><span>9,0</span>
+-   pour chaque instance de la classe `Prof` on connaitra le `Module` pour lequel il est spécialiste mais pour un `Module` 
+on ne peut pas savoir quels sont les `Prof` spécialistes;
 
-(Module.north) to ++(0,1) to node\[above\] <span>Est père de ▶</span> ++(-2.5,0) to ++(0,-1.5) to node\[pos=0.7, above\]<span>1</span> (Module.west) node\[very near end, above right\]<span>\*</span>;
+-   pour chaque instance de la classe `Module` on connaitra le `Prof` responsable mais pour un `Prof` on ne peut pas savoir 
+quels sont les `Modules` dont il est responsable;
 
-(Module.20) to node\[very near end, below\]<span>1</span> node \[above\]<span>A pour responsable ▶</span> node\[very near start, below\]<span>\*</span> (Prof.160);
+-   pour chaque instance de la classe `Module` on connaitra son `Module` père mais pour un `Module` donné on ne peut pas 
+retrouver l’ensemble de ses fils.
 
-(Prof.200) to node\[very near end, above\]<span>1</span> node \[below\]<span>◀ Est spécialiste</span> node\[very near start, above\]<span>\*</span> (Module.340);
+![Diagramme de classe avec navigabilité](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/Navigabilite.puml)
 
-Par défaut les associations sont bidirectionnelles, cela signifie qu’une instance à l’une des extrémités peut savoir avec quelles autres instances elle est liée par cette association. Dans la pratique, ce double lien peut être coûteux à maintenir, c’est pourquoi UML permet de privilégier un seul sens en interdisant l’accès dans l’autre. C’est ce que l’on appelle la restriction de la navigabilité d’une association. Elle est symbolisée par une flèche indiquant le sens de navigation permis.
-
-La figure \[uml\_navigabilite\] montre le sens de navigation des trois types d’association hiérarchiques de la base « Gestion Pédagogique ». Les sens de navigation choisis imposent que :
-
--   pour chaque instance de la classe `Prof` on connaitra le `Module` pour lequel il est spécialiste mais pour un `Module` on ne peut pas savoir quels sont les `Prof` spécialistes;
-
--   pour chaque instance de la classe `Module` on connaitra le `Prof` responsable mais pour un `Prof` on ne peut pas savoir quels sont les `Modules` dont il est responsable;
-
--   pour chaque instance de la classe `Module` on connaitra son `Module` père mais pour un `Module` donné on ne peut pas retrouver l’ensemble de ses fils.
 
 #### Question  :
+Implémenter en respectant le sens de navigation imposé l’association *« est spécialiste »* entre `Prof` et `Module`. 
+Un objet `Prof` n’étant associé qu’à un seul `Module`, il suffit d’ajouter à la classe `Prof` un attribut `specialite` 
+(sans oublier les accesseurs associés) qui est une référence vers un `Module`. Il permet de lier un objet `Prof` à sa 
+spécialité.
 
-Implémenter en respectant le sens de navigation imposé l’association *« est spécialiste »* entre `Prof` et `Module`. Un objet `Prof` n’étant associé qu’à un seul `Module`, il suffit d’ajouter à la classe `Prof` un attribut `specialite` (sans oublier les accesseurs associés) qui est une référence vers un `Module`. Il permet de lier un objet `Prof` à sa spécialité.
-
-Faire de même pour les deux autres TA hiérarchiques en respectant à chaque fois les sens de navigation de la figure \[uml\_navigabilite\]. Copier la classe `testJDBC` dans la nouvelle classe `testAsso1`. Modifier le code de cette classe pour remplir un `ArrayList` d’objets `Prof`. Pour chacun d’eux construire un objet `Module` représentant sa spécialité et conserver une référence vers cet objet dans l’attribut `specialite`. Afficher chacun des profs et le module dont il est spécialiste.
+Faire de même pour les deux autres TA hiérarchiques en respectant à chaque fois les sens de navigation de la figure 
+ci-dessus. Copier la classe `TestEntite` dans la nouvelle classe `TestAsso1`. Modifier le code de cette classe pour 
+remplir un `ArrayList` d’objets `Prof`. Pour chacun d’eux construire un objet `Module` représentant sa spécialité et 
+conserver une référence vers cet objet dans l’attribut `specialite`. Afficher chacun des profs et le module dont il est 
+spécialiste.
 
 ### Modélisation des types d’association non hiérarchiques
 
