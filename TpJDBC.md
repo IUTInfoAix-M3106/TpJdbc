@@ -84,10 +84,10 @@ Le pattern singleton[5] est mis en œuvre pour que tous les objets de notre appl
 custom_mark10
 class ConnexionUnique << (S,#FF7700) Singleton >> {
 -connection : Connection
-{static} -instance : ConnexionUnique
+-instance : ConnexionUnique {static}
 -ConnexionUnique()
 +getConnection() : Connection
-{static} +getInstance() : ConnexionUnique
++getInstance() : ConnexionUnique {static}
 }
 @enduml
 custom_mark10
