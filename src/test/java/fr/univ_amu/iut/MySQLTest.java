@@ -11,13 +11,11 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class MySQLTest {
 
-import static org.rnorth.visibleassertions.VisibleAssertions.assertEquals;
-
-public class SimpleMySQLTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(SimpleMySQLTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MySQLTest.class);
 
 
     public static MySQLContainer mysql = (MySQLContainer) new MySQLContainer().withLogConsumer(new Slf4jLogConsumer(logger));
@@ -30,8 +28,7 @@ public class SimpleMySQLTest {
         try {
             ResultSet resultSet = performQuery(mysql, "SELECT 1");
             int resultSetInt = resultSet.getInt(1);
-
-            assertEquals("A basic SELECT query succeeds", 1, resultSetInt);
+            assertThat(resultSetInt).isEqualTo(1).as("A basic SELECT query succeeds");
         } finally {
             mysql.stop();
         }
