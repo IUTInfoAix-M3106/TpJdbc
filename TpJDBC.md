@@ -76,43 +76,27 @@ seule connexion active à la fois et tous les objets devront se la partager.
 
 Le pattern singleton[5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
 
-
-![Diagramme de la classe ConnexionUnique](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/ConnexionUnique.puml)
-
 #### Question  :
 
-Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné dans la figure \[connexion\]. Copier la classe `testJDBC` dans la nouvelle classe `testConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise notre objet `ConnexionUnique`.
+Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné ci-dessous. Copier la classe `TestJDBC` dans la 
+nouvelle classe `TestConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise un objet `ConnexionUnique`.
+
+![Diagramme de la classe ConnexionUnique](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/ConnexionUnique.puml)
 
 Création des classes d’objets métiers
 -------------------------------------
 
-La création d’un mapping entre le « monde objet » et le « monde relationnel » nécessite au préalable la création de modèles de données semblables mais adaptés aux spécificités de chacun de ses mondes. L’objectif est donc de transformer le modèle relationnel de la base « Gestion Pédagogique » (schéma Entité/Association) en un modèle objet satisfaisant (diagramme de classes UML[6]).
+La création d’un mapping entre le « monde objet » et le « monde relationnel » nécessite au préalable la création de 
+modèles de données semblables mais adaptés aux spécificités de chacun de ses mondes. L’objectif est donc de transformer 
+le modèle relationnel de la base « Gestion Pédagogique » (schéma Entité/Association) en un modèle objet satisfaisant 
+(diagramme de classes UML[6]).
 
-La figure \[uml\_gestion\_peda\] est une traduction directe du schéma Entité/Association en un diagramme de classe UML. Chacun des concepts du schéma E/A a été transformé en son équivalent UML [7]. À partir de cette traduction, nous allons montrer les modifications à apporter à ce modèle pour le rendre implémentable.
+La figure ci-dessous est une traduction directe du schéma Entité/Association en un diagramme de classe UML. Chacun des 
+concepts du schéma E/A a été transformé en son équivalent UML[7]. À partir de cette traduction, des 
+modifications seront apportées à ce modèle pour le rendre implémentable.
 
-\[\]
+![Diagramme de classe « Gestion Pédagogique »](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/blob/master/src/main/resources/assets/GestionPedagogique.puml)
 
-\[text width=2cm\]<span>Module</span><span>0,0</span>
-
-\[text width=2cm\]<span>Prof</span><span>10,0</span>
-
-\[text width=2cm\]<span>Etudiant</span><span>5,-4.5</span>
-
-\[text width=2cm\]<span>Notation</span><span>0,-6</span>
-
-(Module.west) -| +(-1.1,1.3) -| (Module.north);
-
-(Module.west) -| +(-1,1.2) node\[near start, above\]<span>1</span> -| (Module.north) node\[near end, right\]<span>\*</span>;
-
-(Prof.160) to node\[very near start, above\]<span>1</span> node \[above\]<span>A pour responsable ▶</span> node\[very near end, above\]<span>\*</span> (Module.20);
-
-(Module.340) to node\[very near start, above\]<span>1</span> node \[below\]<span>◀ Est spécialiste</span> node\[very near end, above\]<span>\*</span> (Prof.200);
-
-(Module.south) |- node\[\](a) (Etudiant.west) node\[very near start, left\]<span>\*</span> node\[very near end, above\]<span>\*</span>;
-
-(a) circle (2pt)–(Notation);
-
-<span>Module.south</span><span>Prof.south</span><span>Etudiant</span><span>Enseignement</span>
 
 ### Modélisation des types d’entités
 

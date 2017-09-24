@@ -2,6 +2,11 @@
 class ConnexionUnique << (S,#FF7700) Singleton >> {
 -connection : Connection
 -instance : ConnexionUnique {static}
+
+-CONNECT_URL {static}
+-LOGIN {static}
+-PASSWORD {static}
+
 -ConnexionUnique()
 +getConnection() : Connection
 +getInstance() : ConnexionUnique {static}

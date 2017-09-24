@@ -1,0 +1,25 @@
+@startuml
+scale 3
+
+class Module
+
+class Prof
+
+class Etudiant
+
+class Notation
+
+class Enseignement
+
+Enseignement "*"  -right- "1" Module
+Enseignement "*"  -up- "1" Prof
+Enseignement "*"  -down- "1" Etudiant
+
+Etudiant "*" - "*" Module
+(Etudiant, Module) . Notation
+
+Module "1" -- "*" Module : Est père de
+
+Module "*" -- "1" Prof : A pour responsable >
+Prof "*" -- "1" Module : Est spécialiste >
+@enduml
