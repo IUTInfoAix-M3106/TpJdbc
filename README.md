@@ -76,7 +76,7 @@ seule connexion active à la fois et tous les objets devront se la partager.
 
 Le [pattern singleton][5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
 
-#### Question  :
+#### Question 1 :
 
 Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné ci-dessous. Copier la classe `TestJDBC` dans la 
 nouvelle classe `TestConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise un objet `ConnexionUnique`.
@@ -118,7 +118,7 @@ majuscule (utiliser les fonctionnalités de génération de l'IDE).
 les capacités de génération de l'IDE).
 
 -   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de [`Object`][9]
-#### Question  :
+#### Question 2 :
 
 Implémenter (en respectant les conventions ci-dessus) les classes `Etudiant`, `Module` et `Prof` dont le diagramme UML 
 incomplet vous est donné dans la figure ci-après. Copier la classe `TestConnexion` dans la nouvelle classe `TestEntite`. 
@@ -157,7 +157,7 @@ retrouver l’ensemble de ses fils.
 ![Diagramme de classe avec navigabilité](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/Navigabilite.puml)
 
 
-#### Question  :
+#### Question 3 :
 Implémenter en respectant le sens de navigation imposé l’association *« est spécialiste »* entre `Prof` et `Module`. 
 Un objet `Prof` n’étant associé qu’à un seul `Module`, il suffit d’ajouter à la classe `Prof` un attribut `specialite` 
 (sans oublier les accesseurs associés) qui est une référence vers un `Module`. Il permet de lier un objet `Prof` à sa 
@@ -252,7 +252,7 @@ le même étudiant et le même module (peu importe la note).
 
 ![Diagramme de classe de `AssociationNotation`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/AssociationNotation.puml)
 
-#### Question  :
+#### Question 4 :
 
 Implémenter l’association « `Notation` » entre `Etudiant` et `Module` en utilisant l’objet d’association `AssociationNotation`. 
 Copier la classe `TestAsso1` dans la nouvelle classe `TestAsso2`. Modifier le code de cette classe pour charger toutes 
@@ -274,7 +274,7 @@ choix d’utiliser cette solution.
 Dans notre base de données « Gestion Pédagogique » il n’y a qu’une seule association ternaire : `Enseignement`. Elle 
 sera donc notre support pour mettre en pratique cette technique. 
 
-#### Question  :
+#### Question 5 :
 Implémenter l’association « `Enseignement` » entre `Etudiant`, `Module` et `Prof` en transformant l'association en une classe. 
 Modifier chacune des classes participantes pour que les associations *A*<sub>*i*</sub> soient navigables dans les deux sens. 
 Copier la classe `TestAsso2` dans la nouvelle classe `TestAsso3`. Modifier le code de cette classe pour charger tous les 
@@ -380,7 +380,7 @@ public class Main {
   }
 }
 ```
-#### Question  :
+#### Question 6 :
 Implémenter la classe `DAOEtudiant`. Copier la classe `TestEntite` dans la classe `TestDAOEtudiant` et la modifier 
 pour qu'elle utilise un `DAO`.
 
@@ -394,7 +394,7 @@ présenté utilise des `AbstractFactory` pour améliorer encore la modularité d
 
 ![Diagramme de classe des `DAO`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAO.puml)
 
-#### Question  :
+#### Question 7 :
 
 Implémenter toutes les classes `DAO` en prenant en compte intelligemment les associations existant entre les différentes 
 classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `testDAO`. Modifier le code de celle-ci pour que sa 
