@@ -11,12 +11,12 @@ class Notation
 
 class Enseignement
 
-Enseignement "*"  -right- "1" Module
+Enseignement "*"  -right "1" Module
 Enseignement "*"  -up- "1" Prof
 Enseignement "*"  -down- "1" Etudiant
 
 Etudiant "*" - "*" Module
-(Etudiant, Module) . Notation
+(Etudiant, Module) .down Notation
 
 Module "1" -- "*" Module : Est père de
 
