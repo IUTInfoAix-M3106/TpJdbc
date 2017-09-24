@@ -77,21 +77,7 @@ seule connexion active à la fois et tous les objets devront se la partager.
 Le pattern singleton[5] est mis en œuvre pour que tous les objets de notre application puissent récupérer l’unique instance de la classe `Connection`.
 
 
-![Diagramme de la classe ConnexionUnique](https://g.gravizo.com/source/custom_mark10?https%3A%2F%2Fraw.githubusercontent.com%2FIUTInfoAix-M3106%2FTpJdbc%2Fmaster%2FTpJDBC.md)
-
-<details> 
-<summary></summary>
-custom_mark10
-class ConnexionUnique << (S,#FF7700) Singleton >> {
--connection : Connection
--instance : ConnexionUnique {static}
--ConnexionUnique()
-+getConnection() : Connection
-+getInstance() : ConnexionUnique {static}
-}
-@enduml
-custom_mark10
-</details>
+![Diagramme de la classe ConnexionUnique](http://uml.mvnsearch.org/github/IUTInfoAix-M3106/TpJdbc/src/resources/assets/ConnexionUnique.puml)
 
 #### Question  :
 

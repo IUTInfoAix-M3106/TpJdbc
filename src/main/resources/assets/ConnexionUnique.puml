@@ -1,0 +1,9 @@
+@startuml
+class ConnexionUnique << (S,#FF7700) Singleton >> {
+-connection : Connection
+-instance : ConnexionUnique {static}
+-ConnexionUnique()
++getConnection() : Connection
++getInstance() : ConnexionUnique {static}
+}
+@enduml
