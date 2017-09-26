@@ -15,7 +15,7 @@ public class TestJDBC {
 
 	public static void main(String[] args) throws SQLException {
 		// Connexion a la base
-		System.out.println("Connexion a " + CONNECT_URL);
+		System.out.println("Connexion");
 		try (Connection conn = DriverManager.getConnection(CONNECT_URL,LOGIN,PASSWORD)){
 			System.out.println("Connecte\n");
 			// Creation d'une instruction SQL
