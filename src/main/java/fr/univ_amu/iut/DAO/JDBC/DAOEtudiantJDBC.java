@@ -1,10 +1,13 @@
 package fr.univ_amu.iut.DAO.JDBC;
 
 import fr.univ_amu.iut.DAO.DAOEtudiant;
+import fr.univ_amu.iut.JDBC.ResultSetStreamer;
+import fr.univ_amu.iut.JDBC.RowMappers.EtudiantMapper;
 import fr.univ_amu.iut.beans.Etudiant;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class DAOEtudiantJDBC implements DAOEtudiant {
     private Connection connection;
@@ -39,7 +42,7 @@ public final class DAOEtudiantJDBC implements DAOEtudiant {
 
     @Override
     public List<Etudiant> findAll() {
-        return null;
+        return ResultSetStreamer.stream(connection, "SELECT * FROM ETUDIANT", new EtudiantMapper()).collect(Collectors.toList());
     }
 
     @Override

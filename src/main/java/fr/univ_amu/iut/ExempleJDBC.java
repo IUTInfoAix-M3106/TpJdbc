@@ -27,6 +27,7 @@ public class ExempleJDBC {
             Statement statement = conn.createStatement();
             // Execution de la requete
             System.out.println("Execution de la requete : " + reqEtudiantsAixois);
+
             ResultSet resultSet = statement.executeQuery(reqEtudiantsAixois);
             // Affichage du resultat
             while (resultSet.next()) {
@@ -45,6 +46,8 @@ public class ExempleJDBC {
                         .map(Object::toString)
                         .collect(Collectors.joining(", ")));
             }
+
+
             // Fermeture de l'instruction (liberation des ressources)
             statement.close();
             System.out.println("\nOk.\n");
