@@ -3,9 +3,15 @@ package fr.univ_amu.iut.DAO.JDBC;
 import fr.univ_amu.iut.DAO.DAOEtudiant;
 import fr.univ_amu.iut.beans.Etudiant;
 
+import java.sql.Connection;
 import java.util.List;
 
-public class DAOEtudiantJDBC implements DAOEtudiant {
+public final class DAOEtudiantJDBC implements DAOEtudiant {
+    private Connection connection;
+
+    DAOEtudiantJDBC() {
+    }
+
     @Override
     public int computeNbEtudiant() {
         return 0;
@@ -32,7 +38,7 @@ public class DAOEtudiantJDBC implements DAOEtudiant {
     }
 
     @Override
-    public List<Etudiant> FindAll() {
+    public List<Etudiant> findAll() {
         return null;
     }
 

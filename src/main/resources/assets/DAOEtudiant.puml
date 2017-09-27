@@ -1,7 +1,8 @@
 @startuml
 scale 1.5
-class DAOEtudiant{
+class DAOEtudiantJDBC{
 - connection Connection
+DAOEtudiantJDBC()
 +insert(Etudiant):Etudiant
 +delete(Etudiant):boolean
 +update(Etudiant):boolean

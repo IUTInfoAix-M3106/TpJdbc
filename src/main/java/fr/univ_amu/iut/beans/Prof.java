@@ -1,84 +1,81 @@
 package fr.univ_amu.iut.beans;
 
+public class Prof {
+    private int numProf;
+    private String nomProf;
+    private String prenomProf;
+    private String adrProf;
+    private String cpProf;
+    private String villeProf;
+    private Module matSpec;
 
+    public Prof() {
+    }
 
+    public String getAdrProf() {
+        return adrProf;
+    }
 
-public class Prof{
-	private int numProf;
-	private String nomProf;
-	private String prenomProf;
-	private String adrProf;
-	private String cpProf;
-	private String villeProf;
-	private Module matSpec;
+    public void setAdrProf(String adrProf) {
+        this.adrProf = adrProf;
+    }
 
-	public Prof() {
-	}
+    public String getCpProf() {
+        return cpProf;
+    }
 
-	public String getAdrProf() {
-		return adrProf;
-	}
+    public void setCpProf(String cpProf) {
+        this.cpProf = cpProf;
+    }
 
-	public String getCpProf() {
-		return cpProf;
-	}
+    public Module getMatSpec() {
+        return matSpec;
+    }
 
-	public Module getMatSpec() {
-		return matSpec;
-	}
+    public void setMatSpec(Module matSpec) {
+        this.matSpec = matSpec;
+    }
 
-	public String getNomProf() {
-		return nomProf;
-	}
+    public String getNomProf() {
+        return nomProf;
+    }
 
-	public int getNumProf() {
-		return numProf;
-	}
+    public void setNomProf(String nomProf) {
+        this.nomProf = nomProf;
+    }
 
-	public String getPrenomProf() {
-		return prenomProf;
-	}
+    public int getNumProf() {
+        return numProf;
+    }
 
-	public String getVilleProf() {
-		return villeProf;
-	}
+    public void setNumProf(int numProf) {
+        this.numProf = numProf;
+    }
 
-	public void setAdrProf(String adrProf) {
-		this.adrProf = adrProf;
-	}
+    public String getPrenomProf() {
+        return prenomProf;
+    }
 
-	public void setCpProf(String cpProf) {
-		this.cpProf = cpProf;
-	}
+    public void setPrenomProf(String prenomProf) {
+        this.prenomProf = prenomProf;
+    }
 
-	public void setMatSpec(Module matSpec) {
-		this.matSpec = matSpec;
-	}
+    public String getVilleProf() {
+        return villeProf;
+    }
 
-	public void setNomProf(String nomProf) {
-		this.nomProf = nomProf;
-	}
+    public void setVilleProf(String villeProf) {
+        this.villeProf = villeProf;
+    }
 
-	public void setNumProf(int numProf) {
-		this.numProf = numProf;
-	}
-
-	public void setPrenomProf(String prenomProf) {
-		this.prenomProf = prenomProf;
-	}
-
-	public void setVilleProf(String villeProf) {
-		this.villeProf = villeProf;
-	}
-
-	@Override
-	public String toString() {
-		return "Prof [numProf=" + numProf + ", "
-				+ (nomProf != null ? "nomProf=" + nomProf + ", " : "")
-				+ (prenomProf != null ? "prenomProf=" + prenomProf + ", " : "")
-				+ (adrProf != null ? "adrProf=" + adrProf + ", " : "")
-				+ (cpProf != null ? "cpProf=" + cpProf + ", " : "")
-				+ (villeProf != null ? "villeProf=" + villeProf + ", " : "")
-				+ (matSpec != null ? "matSpec=" + matSpec.getCode() : "") + "]";
-	}
+    @Override
+    public String toString() {
+        return "Prof [numProf=" + numProf + ", "
+                + (nomProf != null ? "nomProf=" + nomProf + ", " : "")
+                + (prenomProf != null ? "prenomProf=" + prenomProf + ", " : "")
+                + (adrProf != null ? "adrProf=" + adrProf + ", " : "")
+                + (cpProf != null ? "cpProf=" + cpProf + ", " : "")
+                + (villeProf != null ? "villeProf=" + villeProf + ", " : "")
+                + (matSpec != null ? "matSpec=" + matSpec.getCode() : "") + "]";
+    }
 }

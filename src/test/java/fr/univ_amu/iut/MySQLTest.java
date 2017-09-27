@@ -11,6 +11,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MySQLTest {
@@ -18,7 +19,8 @@ public class MySQLTest {
     private static final Logger logger = LoggerFactory.getLogger(MySQLTest.class);
 
 
-    public static MySQLContainer mysql = (MySQLContainer) new MySQLContainer().withLogConsumer(new Slf4jLogConsumer(logger));
+    private static final MySQLContainer mysql = (MySQLContainer) new MySQLContainer().withLogConsumer(new Slf4jLogConsumer(logger));
+
     static {
         mysql.start();
     }
@@ -34,7 +36,7 @@ public class MySQLTest {
         }
     }
 
-    protected ResultSet performQuery(MySQLContainer containerRule, String sql) throws SQLException {
+    private ResultSet performQuery(MySQLContainer containerRule, String sql) throws SQLException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(containerRule.getJdbcUrl());
         hikariConfig.setUsername(containerRule.getUsername());

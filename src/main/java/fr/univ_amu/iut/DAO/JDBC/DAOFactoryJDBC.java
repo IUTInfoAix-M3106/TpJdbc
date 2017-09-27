@@ -5,7 +5,7 @@ import fr.univ_amu.iut.DAO.DAOFactory;
 import fr.univ_amu.iut.DAO.DAOModule;
 import fr.univ_amu.iut.DAO.DAOProf;
 
-public class DAOFactoryJDBC implements DAOFactory {
+public final class DAOFactoryJDBC implements DAOFactory {
     @Override
     public DAOEtudiant createDAOEtudiant() {
         return new DAOEtudiantJDBC();

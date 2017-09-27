@@ -91,8 +91,8 @@ Le [pattern singleton][5] est mis en œuvre pour que tous les objets de notre ap
 
 #### Question 1 :
 
-Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné ci-dessous. Copier la classe `TestJDBC` dans la 
-nouvelle classe `TestConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise un objet `ConnexionUnique`.
+Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné ci-dessous. Copier la classe `ExempleJDBC` dans la 
+nouvelle classe `ExempleConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise un objet `ConnexionUnique`.
 
 ![Diagramme de la classe ConnexionUnique](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/ConnexionUnique.puml)
 
@@ -130,13 +130,15 @@ majuscule (utiliser les fonctionnalités de génération de l'IDE).
 -   La classe doit surcharger la méthode `toString()` pour pouvoir afficher l’état des instances de cette classe (voir 
 les capacités de génération de l'IDE).
 
--   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de [`Object`][9]
+-   La classe doit aussi surcharger les méthodes `equals()` et `hashCode()` héritées de [`Object`][9] (comme pour les 
+autres questions ne surtout pas essayer de les écrire à la main. Demander à votre IDE de les générer directement)
 #### Question 2 :
 
 Implémenter (en respectant les conventions ci-dessus) les classes `Etudiant`, `Module` et `Prof` dont le diagramme UML 
-incomplet vous est donné dans la figure ci-après. Copier la classe `TestConnexion` dans la nouvelle classe `TestEntite`. 
-Modifier le code de cette classe pour que sa boucle principale remplisse un [`ArrayList`][10] d’objets `Etudiant` et qu’elle 
-affiche le contenu de cette liste en utilisant la méthode `toString()`.
+incomplet vous est donné dans la figure ci-après (un squelette vous est donné dans le paquetage `beans`). Copier la 
+classe `ExempleConnexion` dans la nouvelle classe `ExempleEntite`. Modifier le code de cette classe pour que sa boucle 
+principale remplisse un [`ArrayList`][10] d’objets `Etudiant` et qu’elle affiche le contenu de cette liste en utilisant 
+la méthode `toString()` à travers un simple `System.out.println`.
 
 ![Diagramme de classe des entités](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/ClassesMetier.puml)
 
@@ -169,17 +171,16 @@ retrouver l’ensemble de ses fils.
 
 ![Diagramme de classe avec navigabilité](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/Navigabilite.puml)
 
-
 #### Question 3 :
 Implémenter en respectant le sens de navigation imposé l’association *« est spécialiste »* entre `Prof` et `Module`. 
-Un objet `Prof` n’étant associé qu’à un seul `Module`, il suffit d’ajouter à la classe `Prof` un attribut `specialite` 
+Un objet `Prof` n’étant associé qu’à un seul `Module`, il suffit d’ajouter à la classe `Prof` un attribut `matSpec` 
 (sans oublier les accesseurs associés) qui est une référence vers un `Module`. Il permet de lier un objet `Prof` à sa 
 spécialité.
 
 Faire de même pour les deux autres TA hiérarchiques en respectant à chaque fois les sens de navigation de la figure 
-ci-dessus. Copier la classe `TestEntite` dans la nouvelle classe `TestAsso1`. Modifier le code de cette classe pour 
+ci-dessus. Copier la classe `ExempleEntite` dans la nouvelle classe `ExempleAsso1`. Modifier le code de cette classe pour 
 remplir un `ArrayList` d’objets `Prof`. Pour chacun d’eux construire un objet `Module` représentant sa spécialité et 
-conserver une référence vers cet objet dans l’attribut `specialite`. Afficher chacun des profs et le module dont il est 
+conserver une référence vers cet objet dans l’attribut `matSpec`. Afficher chacun des profs et le module dont il est 
 spécialiste.
 
 ### Modélisation des types d’association non hiérarchiques
@@ -265,10 +266,10 @@ le même étudiant et le même module (peu importe la note).
 
 ![Diagramme de classe de `AssociationNotation`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/AssociationNotation.puml)
 
-#### Question 4 :
+#### Question 4 (À faire après la question 6 et 7):
 
 Implémenter l’association « `Notation` » entre `Etudiant` et `Module` en utilisant l’objet d’association `AssociationNotation`. 
-Copier la classe `TestAsso1` dans la nouvelle classe `TestAsso2`. Modifier le code de cette classe pour charger toutes 
+Copier la classe `ExempleAsso1` dans la nouvelle classe `ExempleAsso2`. Modifier le code de cette classe pour charger toutes 
 les notes des différents étudiants aux différents modules dans l’objet d’association `AssociationNotation`. Pour 
 simplifier les traitements, penser à charger l’ensemble des étudiants et des modules à l’avance. Afficher les étudiants 
 et leurs notes pour le module ’ACSI’.
@@ -287,10 +288,10 @@ choix d’utiliser cette solution.
 Dans notre base de données « Gestion Pédagogique » il n’y a qu’une seule association ternaire : `Enseignement`. Elle 
 sera donc notre support pour mettre en pratique cette technique. 
 
-#### Question 5 :
+#### Question 5 (À faire après la question 6 et 7):
 Implémenter l’association « `Enseignement` » entre `Etudiant`, `Module` et `Prof` en transformant l'association en une classe. 
 Modifier chacune des classes participantes pour que les associations *A*<sub>*i*</sub> soient navigables dans les deux sens. 
-Copier la classe `TestAsso2` dans la nouvelle classe `TestAsso3`. Modifier le code de cette classe pour charger tous les 
+Copier la classe `ExempleAsso2` dans la nouvelle classe `ExempleAsso3`. Modifier le code de cette classe pour charger tous les 
 enseignements. Afficher tous les enseignements suivis par les étudiants du groupe 1.
 
 Construction de la couche d’accès aux données
@@ -319,9 +320,9 @@ actuelles génèrent automatiquement une grande partie du code (Java et/ou <span
 Chacun des DAO devra contenir des méthodes pour effectuer les 4 opérations de base pour la persistance des données : *créer, récupérer, 
 mettre à jour et supprimer* (Généralement désigné par l’acronyme anglais CRUD pour *Create, Retrieve, Update et Delete*). 
 Par convention, chacune des classes de DAO devra être nommée par "`DAO`" suivi du nom de la classe métier associée. La 
-figure ci-dessous décrit la classe `DAOEtudiant` qui est le DAO associé à la classe d’objet métier `Etudiant`. 
+figure ci-dessous décrit la classe `DAOEtudiantJDBC` qui est le DAO associé à la classe d’objet métier `Etudiant`. 
 
-![Diagramme de classe de `DAOEtudiant`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAOEtudiant.puml)
+![Diagramme de classe de `DAOEtudiantJDBC`](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/DAOEtudiant.puml)
 
 Cette classe est constituée des méthodes suivantes :
 
@@ -345,7 +346,7 @@ retourner plusieurs.
 
 -   les `compute` qui, comme leur nom l’indique, ont pour objectif d’effectuer des calculs sur les étudiants. La plupart 
 du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préférera, pour des raisons d’efficacité, le faire 
-directement dans le `Sgbd`. Ces méthodes sont donc soit des requêtes <span style="font-variant:small-caps;">Sql</span> 
+directement dans le <span style="font-variant:small-caps;">Sgbd</span>. Ces méthodes sont donc soit des requêtes <span style="font-variant:small-caps;">Sql</span> 
 agrégatives soit des appels de procédures stockées.
 
 
@@ -375,7 +376,7 @@ pour l’ajout d’un nouvel étudiant et sa modification :
 ```java
 public class Main {
   public static void main(String[] args){
-    DAOEtudiant dao = new DAOEtudiant();
+    DAOEtudiant dao = new DAOEtudiantJDBC();
     Etudiant e = new Etudiant();//e est un Etudiant temporaire
     e.setNom("Dupont");
     e.setPrenom("Paul");
@@ -394,7 +395,7 @@ public class Main {
 }
 ```
 #### Question 6 :
-Implémenter la classe `DAOEtudiant`. Copier la classe `TestEntite` dans la classe `TestDAOEtudiant` et la modifier 
+Implémenter la classe `DAOEtudiant`. Copier la classe `ExempleEntite` dans la classe `ExempleDAOEtudiant` et la modifier 
 pour qu'elle utilise un `DAO`.
 
 ### Hiérarchie des DAO
@@ -409,10 +410,10 @@ présenté utilise des `AbstractFactory` pour améliorer encore la modularité d
 
 #### Question 7 :
 
-Implémenter toutes les classes `DAO` en prenant en compte intelligemment les associations existant entre les différentes 
-classes métiers. Copier la classe `TestAsso2` dans la nouvelle classe `TestDAO`. Modifier le code de celle-ci pour que sa 
-boucle principale récupère tous les étudiants de deuxième années, les affiche, puis augmente toutes leurs notes pour le 
-module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
+Implémenter les 2 autres classes `DAO` pour les entités `Prof` et `Module`.  Prenez en compte intelligemment les 
+associations existant entre les différentes classes métiers. Copier la classe `ExempleAsso2` dans la nouvelle classe `ExempleDAO`. 
+Modifier le code de celle-ci pour que sa boucle principale récupère tous les étudiants de deuxième années, les affiche, 
+puis augmente toutes leurs notes pour le module « ACSI » d’un point et enfin sauvegarde les résultats dans la base.
 
 [1]:<http://www.hibernate.org/>
 
