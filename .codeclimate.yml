@@ -1,14 +1,9 @@
 engines:
   checkstyle:
     enabled: true
-
-ratings:
-  paths:
-  - "**.java"
-
-engines:
   pmd:
     enabled: true
+
 ratings:
   paths:
   - "**.java"
