@@ -3,7 +3,9 @@ engines:
     enabled: true
   pmd:
     enabled: true
-
+  markdownlint:
+    enabled: true
 ratings:
   paths:
   - "**.java"
+  - "**.md"
