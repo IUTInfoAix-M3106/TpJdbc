@@ -1,6 +1,13 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=62f87aebb30f4261aa52224f8746ea11c58e9bd86224bc7718c004fdb7a74d9b
+    
 language: java
 
 before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
@@ -19,3 +26,4 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
