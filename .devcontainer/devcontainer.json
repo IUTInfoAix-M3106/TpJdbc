@@ -28,7 +28,8 @@
 	"vscjava.vscode-java-pack",
 	"redhat.vscode-xml",
 	"redhat.fabric8-analytics",
-	"yzhang.markdown-all-in-one"
+	"yzhang.markdown-all-in-one",
+	"davidanson.vscode-markdownlint"
 ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
