@@ -11,15 +11,15 @@
 
 ## TP découverte de JDBC et Création du couche de persistance [![Java CI](https://github.com/IUTInfoAix-M3106/TpJdbc/actions/workflows/mvn_build.yml/badge.svg)](https://github.com/IUTInfoAix-M3106/TpJdbc/actions/workflows/mvn_build.yml)
 
-Tp d'initiation à JDBC donné aux étudiants de deuxième année du DUT Informatique d'Aix-Marseille. En plus d'apprendre à utiliser l'API JDBC, l'objectif final de ce TP est de sensibiliser les étudiants à la difficulté de de construction et de maintenance manuelle d'une couche de persistance.
+Tp d'initiation à JDBC donné aux étudiants de deuxième année du DUT Informatique d'Aix-Marseille. En plus d'apprendre à utiliser l'API JDBC, l'objectif de ce TP est de sensibiliser les étudiants à la difficulté de de construction et de maintenance manuelle d'une couche de persistance.
 
-Plusieurs liens dans le document pointent vers des ressources non accessibles en dehors de l'IUT. Les versions ultérieures corrigerons ce problème. Ce document est diffusé sous licence Creative Common CC-BY-NC-SA.
+Ce document est diffusé sous licence Creative Common CC-BY-SA.
 
-L’objectif de ce document est de vous présenter une méthode d’accès à un Sgbd à travers le langage de programmation Java. Pour cela, l’API JDBC ([Java DataBase Connectivity](http://download.oracle.com/javase/11/docs/technotes/guides/jdbc/)) sera utilisée. C’est un ensemble de classes permettant d’exécuter des ordres `SQL` de manière générique. L’API JDBC est construite autour de pilotes (Driver) interchangeables. Un pilote est un module logiciel dédié à une source de données tabulaires (un `Sgbd-R` dans la plupart des cas). Pour utiliser comme source de données une base MySQL au lieu d’une base Oracle, il suffit de de remplacer le pilote Oracle par celui de MySQL. Ce changement de pilote peut se faire directement par paramétrage sans même avoir besoin changer une seule ligne de code ni même le recompiler (Il faut tout de même pondérer ces avantages car dans la pratique il existe de très nombreuses incompatibilités liées à des implémentations du langage `SQL` non respectueuses des standards).
+L’objectif de ce document est de présenter une méthode d’accès à un SGBD à travers le langage de programmation Java. Pour cela, l’API JDBC ([Java DataBase Connectivity](https://en.wikipedia.org/wiki/Java_Database_Connectivity)) sera utilisée. C’est un ensemble de classes permettant d’exécuter des ordres SQL de manière générique. L’API JDBC est construite autour de pilotes (Driver) interchangeables. Un pilote est un module logiciel dédié à une source de données tabulaires (un SGBD Relationnel dans la plupart des cas). Pour utiliser comme source de données une base MySQL au lieu d’une base Oracle, il suffit de de remplacer le pilote Oracle par celui de MySQL. Ce changement de pilote peut se faire directement par paramétrage sans même avoir besoin changer le code ni même le recompiler (Il faut tout de même pondérer ces avantages car dans la pratique il existe de très nombreuses incompatibilités liées à des implémentations du langage SQL non respectueuses des standards).
 
-Comme indiqué dans le cours, l'un des principal défaut que l’on peut reprocher à JDBC est d’être une API de bas niveau qui conduit à une trop forte imbrication entre le code métier et la base de données. Le code produit est donc trop peu modulaire et trop dépendant du `Sgbd` choisit. Cela implique une moins grande maintenabilité et une plus grande dépendance face à une technologie de manipulation des données. Pour contourner cette difficulté, nous allons construire une couche dédiée à l’accès aux données (souvent appelée couche DAO). La construction d’une telle couche a pour objectif de séparer totalement les accès aux données du code de notre application. Les techniques présentées constituent une première introduction par la pratique aux solutions de persistance Objets/Relationnelle comme [Hibernate][1] ou [EclipseLink][2].
+Comme indiqué dans le cours, l'un des principal défaut que l’on peut reprocher à JDBC est d’être une API de bas niveau qui conduit à une trop forte imbrication entre le code métier et la base de données. Le code produit est donc peu modulaire et trop dépendant du SGBD choisit. Cela implique une moins grande maintenabilité et une plus grande dépendance face à une technologie de manipulation des données. Pour contourner cette difficulté à petite échelle, nous allons construire une couche dédiée à l’accès aux données. La construction d’une telle couche a pour objectif d'isoler les accès aux données du code de notre application. Les techniques présentées constituent une première introduction prototypale aux solutions de persistance Objets/Relationnelle comme [Hibernate][1] ou [EclipseLink][2].
 
-Pour illustrer ce propos, nous utiliserons la base de données « [Gestion Pédagogique][3] » que vous avez utilisée lors de vos TP de `PL/SQL`.
+Pour illustrer ce propos, nous utiliserons la base de données « [Gestion Pédagogique][3] » que vous avez utilisée lors de vos TP de PL/SQL.
 
 ## Création de votre fork du TP
 
@@ -29,11 +29,19 @@ La première chose que vous allez faire est de créer un fork d'un dépôt. Pour
 
 Comme pour les TP d'IHM, GitHub va vous créer un dépôt contenant un fork du dépôt 'IUTInfoAix-m3106/TpJdbc' et s'appellant 'IUTInfoAix-m3106-2021/TpJdbc-votreUsername'. Vous apparaîtrez automatiquement comme contributeur de ce projet pour y pousser votre travail.
 
-Une fois votre fork créé, il suffit de l'importer dans un IDE pour continuer le TP.
+Une fois votre fork créé, il suffit de l'importer dans un IDE pour faire le TP. La réalisation du TP étant notée, veillez à pousser vos modifications régulièrement.
+
+## Ouvrir votre projet avec Gitpod
+
+Si vous n'êtes pas certain de pouvoir disposer d'un environnement correctement configuré, vous pouvez ouvrir le dépôt dans l'IDE en ligne mis à disposition avec l'outil Gitpod.
+
+Gitpod est un outil permettant de créer des environnements de développement éphémères. Ces environnements permettent aux développeurs de disposer à chaque instant, d'un IDE prêts avec tous les outils et dépendances pré-paramétrés.
+
+Si vous avez installé l'extension navigateur pour Gitpod lors du précédent tutoriel, vous pouvez ouvrir votre environnement directement en cliquant sur le boutons `Gitpod` qui s'est ajouté à la page web principale de votre dépôt Github. Si ce n'est pas le cas, vous pouvez démarrer votre  espace de travail en préfixant l'URL du référentiel git par [https://gitpod.io/#](https://gitpod.io/#).
 
 ## Couche de persistance
 
-L’API JDBC permet de facilement récupérer et manipuler un ensemble de tuples récupéré à partir d’une base de données. Chaque tuple n’est pas simplement une concaténation de valeurs sans rapport les unes avec les autres mais un ensemble de valeurs structuré permettant de modéliser une « entité » de l’univers réel. Lorsqu’un tuple est récupéré à partir de JDBC, il faut donc impérativement conserver ce lien sémantique existant entre les attributs. C’est pour cela que chaque tuple de la base de données devra être associé (mappé) à un objet du langage de programmation. Une fois le mapping établi, l’objet commence son existence autonome comme n’importe quel autre objet de l’application. Son état (ensemble des valeurs de ses propriétés) sera très probablement mis à jour. Afin que ces changements soient visibles pour les autres utilisateurs, il faudra périodiquement synchroniser l’état de l’objet et de la base de données. Une fois les modifications sauvegardées, l’objet pourra être détruit car l’utilisateur peut à tout moment reconstruire un objet semblable à partir de la base de données. Le mapping objet/relationnel permet ainsi de rendre les objets de l’application persistants.
+L’API JDBC permet de récupérer et manipuler un ensemble de tuples récupéré à partir d’une base de données. Chaque tuple n’est pas simplement une concaténation de valeurs sans rapport les unes avec les autres mais un ensemble de valeurs structuré permettant de modéliser une « entité » de l’univers réel. Lorsqu’un tuple est récupéré à partir de JDBC, il faut donc impérativement conserver ce lien sémantique existant entre les attributs. C’est pour cela que chaque tuple de la base de données devra être associé (mappé) à un objet du langage de programmation. Une fois le mapping établi, l’objet commence son existence autonome comme n’importe quel autre objet de l’application. Son état (ensemble des valeurs de ses propriétés) sera très probablement mis à jour. Afin que ces changements soient visibles pour les autres utilisateurs, il faudra périodiquement synchroniser l’état de l’objet et de la base de données. Une fois les modifications sauvegardées, l’objet pourra être détruit car l’utilisateur peut à tout moment reconstruire un objet semblable à partir de la base de données. Le mapping objet/relationnel permet ainsi de rendre les objets de l’application persistants.
 
 Dans la suite de cette section nous allons montrer une méthode pour créer un tel mapping. La solution présentée est principalement pédagogique : elle ne sera en conséquence pas satisfaisante pour une solution à plus grande échelle, mais sera amplement suffisante pour le développement d’une application mono-utilisateur.
 
@@ -48,6 +56,8 @@ Le [pattern singleton][5] est mis en œuvre pour que tous les objets de notre ap
 Écrire la classe `ConnexionUnique` dont le diagramme UML vous est donné ci-dessous. Copier la classe `ExempleJDBC` dans la nouvelle classe `ExempleConnexion`. Modifier le code de cette nouvelle classe pour qu’elle utilise un objet `ConnexionUnique`.
 
 ![Diagramme de la classe ConnexionUnique](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/IUTInfoAix-M3106/TpJdbc/master/src/main/resources/assets/ConnexionUnique.puml)
+
+Ce diagramme est généré avec l'outil PlantUML. La convention graphique des schémas UML varie en fonction de l'outil utilisé. Vous pouvez retrouver la documentation de PlantUML ainsi que la représentation visuelle adoptée sur cette page : [https://plantuml.com/fr/class-diagram](https://plantuml.com/fr/class-diagram).
 
 ### Création des classes d’objets métiers
 
@@ -158,7 +168,7 @@ Les paragraphes précédents ont présenté comment construire le modèle objet 
 
 * Une moins grande indépendance vis à vis du SGBD. L’intrication forte entre code métier et code d’accès au données rend le changement de SGBD (par exemple le remplacement de Oracle par Postgres) très délicat voir impossible.
 
-Pour éviter ces problèmes, nous allons construire une couche dédiée à l’accès aux données qui utilisera le pattern [DAO][14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de l’application utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle sera donc une sorte d’abstraction du modèle de données indépendante de la solution de stockage des données. La couche DAO contiendra au moins autant de classes de DAO que d’entités du MCD (classe d’objet métier). L’écriture et la maintenance d’une telle couche est donc une opération généralement fastidieuse. C’est l’une des raisons pour lesquelles les solutions de persistance actuelles génèrent automatiquement une grande partie du code (Java et/ou `SQL`).
+Pour éviter ces problèmes, nous allons construire une couche dédiée à l’accès aux données qui utilisera le pattern [DAO][14] (Data Access Object). Cette couche encapsulera tous les accès à la source de données. Les autres parties de l’application utiliseront uniquement les objets de cette couche pour gérer la persistance. Elle sera donc une sorte d’abstraction du modèle de données indépendante de la solution de stockage des données. La couche DAO contiendra au moins autant de classes de DAO que d’entités du MCD (classe d’objet métier). L’écriture et la maintenance d’une telle couche est donc une opération généralement fastidieuse. C’est l’une des raisons pour lesquelles les solutions de persistance actuelles génèrent automatiquement une grande partie du code (Java et/ou SQL).
 
 ### Structure d'un DAO
 
@@ -176,7 +186,7 @@ Cette classe est constituée des méthodes suivantes :
 
 * les `get` qui constituent, avec les `find`, les méthodes de récupération des données. Les paramètres passés à ces méthodes permettent de récupérer uniquement les tuples satisfaisants certains critères. La différence entre ces deux familles de méthodes est que les `get` doivent retourner exactement un seul résultat alors que les `find` peuvent en retourner plusieurs.
 
-* les `compute` qui, comme leur nom l’indique, ont pour objectif d’effectuer des calculs sur les étudiants. La plupart du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préférera, pour des raisons d’efficacité, le faire directement dans le `Sgbd`. Ces méthodes sont donc soit des requêtes `SQL` agrégatives soit des appels de procédures stockées.
+* les `compute` qui, comme leur nom l’indique, ont pour objectif d’effectuer des calculs sur les étudiants. La plupart du temps (sauf si le calcul demande de ne rapatrier aucune donnée) on préférera, pour des raisons d’efficacité, le faire directement dans le SGBD. Ces méthodes sont donc soit des requêtes SQL agrégatives soit des appels de procédures stockées.
 
 ### Utilisation d'un DAO
 
@@ -186,7 +196,7 @@ En utilisant `DAOEtudiant`, la récupération par l’application de l’étudia
 
 2. L’objet `DAOEtudiant` récupère cette demande (méthode `getByID(1)` ) et il s’occupe d’exécuter la requête SQL avec JDBC.
 
-3. Le `Sgbd` interprète la requête SQL et retourne le résultat attendu (s’il existe).
+3. Le SGBD interprète la requête SQL et retourne le résultat attendu (s’il existe).
 
 4. L’objet `DAOEtudiant` récupère ces informations.
 

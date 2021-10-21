@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 public class AppTest {
     @Test
-    public void test_should_fail() {
+    public void test_should_never_fail() {
         assertTrue("Really serious test !!!", true);
     }
 }
